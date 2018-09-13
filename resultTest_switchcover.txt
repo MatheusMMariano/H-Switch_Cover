@@ -1,0 +1,90 @@
+-- XMLdir = "xml/SwitchCover.xml";
+
+>>- 1 - GRAPH MAIN
+>> State [P]
+     to [B]b
+>> State [B]
+     to [P]r
+     to [W]f
+>> State [W]
+     to [P]a
+     to [B]c
+
+
+
+>>- 2 - DUAL GRAPH CONVERTED
+
+>> State [a]
+     to [b]ab
+>> State [b]
+     to [r]br
+     to [f]bf
+>> State [r]
+     to [b]rb
+>> State [c]
+     to [r]cr
+     to [f]cf
+>> State [f]
+     to [a]fa
+     to [c]fc
+
+
+>>- 3 - DUAL GRAPH TEST CASE IN DEPTH/BREADTH FIRST SEARCH:
+
+-> DEPTH FIRST SEARCH: 
+>> State [a]
+     to [b]ab
+>> State [b]
+     to [r]br
+     to [f]bf
+>> State [r]
+     to [b]rb
+>> State [c]
+     to [r]cr
+     to [f]cf
+>> State [f]
+     to [a]fa
+     to [c]fc
+
+0 - a
+1 - b
+2 - r
+3 - b
+4 - f
+5 - c
+6 - r
+7 - f
+
+>>- Euler Cycle DEPTH:  a b r b f c r f
+
+>>- Euler Cycle DEPTH: 
+
+-> DUAL GRAPH BY BREADTH FIRST SEARCH
+>> State [a]
+>> State [b]
+     to [r]br
+     to [f]bf
+>> State [r]
+     to [b]rb
+>> State [c]
+     to [r]cr
+     to [f]cf
+>> State [f]
+     to [a]fa
+     to [c]fc
+
+0 - c
+1 - a
+2 - r
+3 - b
+4 - r
+5 - f
+6 - a
+7 - b
+
+>>- Euler Cycle DEPTH: 
+
+>>- Euler Cycle DEPTH:  c a r b r f a b
+
+
+-> TEMPO: 94

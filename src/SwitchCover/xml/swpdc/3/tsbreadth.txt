@@ -1,0 +1,4 @@
+switchPDCOn/start60s,POSTOk/null,endtime/null,PREP_HK/CMD_REC,TX_DATA_HK/HK_DATA_RSC0,start60s/null,endtime/null
+switchPDCOn/start60s,POSTOk/null,endtime/null,CH_SW_PAR_HK_60s/CMD_REC,CH_SW_PAR_AnC_1000ms/CMD_REC,start600s/null,endtime/null
+switchPDCOn/start60s,POSTOk/null,endtime/null,VER_OP_MODE/INFO_OP_MODE,ACT_HW_EPP1On/CMD_REC,ACT_HW_EPP2On/CMD_REC,start30s/null,endtime/null
+switchPDCOn/start60s,POSTOk/null,endtime/null,PREP_HK/CMD_REC,TX_DATA_HK/HK_DATA_RSC0,TX_DATA_Sci/NO_DATA,CH_SW_PAR_HK_600s/CMD_REC,CH_SW_PAR_AnC_10000ms/CMD_REC,ACT_HW_EPP2Off/CMD_REC,ACT_HW_EPP1Off/CMD_REC,switchPDCOff/null,switchPDCOn/start60s

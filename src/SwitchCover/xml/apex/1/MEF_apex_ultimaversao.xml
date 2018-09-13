@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet type="text/xsl" href="mfeeTesteX.xsl"?> 
+<MFEE>
+	<STATES>
+		<STATE NAME="idleSync" TYPE="inicial"/>
+		<STATE NAME="idleSyncExp" TYPE="normal"/>
+		<STATE NAME="countingTimeWaitingType" TYPE="normal"/>
+		<STATE NAME="countingTimeTypeC" TYPE="normal"/>
+		<STATE NAME="countingTimeTypeD" TYPE="normal"/>
+		<STATE NAME="countingTimeTypeE" TYPE="normal"/>
+		<STATE NAME="countingTimeTypeF" TYPE="normal"/>
+		<STATE NAME="countingTimeChecksum" TYPE="normal"/>
+		<STATE NAME="countingTimeSizeC" TYPE="normal"/>
+		<STATE NAME="countingTimeSizeD" TYPE="normal"/>
+		<STATE NAME="countingTimeSizeE" TYPE="normal"/>
+		<STATE NAME="countingTimeSizeF" TYPE="normal"/>
+		<STATE NAME="countingTimeDataC" TYPE="normal"/>
+		<STATE NAME="countingTimeDataD" TYPE="normal"/>
+		<STATE NAME="countingTimeDataE" TYPE="normal"/>
+		<STATE NAME="countingTimeDataF" TYPE="normal"/>
+		<STATE NAME="idleSync" TYPE="final"/>
+	</STATES>
+	<EVENTS>
+		<EVENT VALUE="1" NAME="NotEB"/>
+		<EVENT VALUE="1" NAME="0xEB"/>
+		<EVENT VALUE="1" NAME="Not0x92"/>
+		<EVENT VALUE="1" NAME="0x92"/>
+		<EVENT VALUE="1" NAME="TimerTimeout"/>
+		<EVENT VALUE="1" NAME="Type_NotOk"/>
+		<OUTPUT VALUE="saida 6" EVENT="tnok"/>
+		<EVENT VALUE="1" NAME="Type07"/>
+		<OUTPUT VALUE="saida 1" EVENT="tok"/>
+		<EVENT VALUE="1" NAME="Type1A"/>
+		<EVENT VALUE="1" NAME="Type1B"/>
+		<EVENT VALUE="1" NAME="Type1F"/>
+		<EVENT VALUE="1" NAME="Type01"/>
+		<EVENT VALUE="1" NAME="Type02"/>
+		<EVENT VALUE="1" NAME="Type03"/>
+		<EVENT VALUE="1" NAME="Type04"/>
+		<EVENT VALUE="1" NAME="Type05"/>
+		<EVENT VALUE="1" NAME="Size01_C"/>
+		<OUTPUT VALUE="saida 2" EVENT="sok"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeNotOK_C"/>
+		<OUTPUT VALUE="saida 4" EVENT="snok"/>
+		<EVENT VALUE="1" NAME="Size04_D"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeNotOK_D"/>
+		<EVENT VALUE="1" NAME="Size38_E"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeNotOK_E"/>
+		<EVENT VALUE="1" NAME="Size01_F"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeNotOK_F"/>
+		<EVENT VALUE="1" NAME="Cks_NotOk"/>
+		<EVENT VALUE="1" NAME="Cks_Ok"/>
+		<EVENT VALUE="1" NAME="Data00_C"/>
+		<OUTPUT VALUE="saida 3" EVENT="dok"/>
+		<EVENT VALUE="1" NAME="Data01_C"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataNotOK_C"/>
+		<OUTPUT VALUE="saida 5" EVENT="dnok"/>
+		<EVENT VALUE="1" NAME="DataE100E500_D"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataNotOK_D"/>
+		<EVENT VALUE="1" NAME="Data0x100_E"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataNotOK_E"/>
+		<EVENT VALUE="1" NAME="Data30_F"/>
+		<EVENT VALUE="1" NAME="Data31_F"/>
+		<EVENT VALUE="1" NAME="Data32_F"/>
+		<EVENT VALUE="1" NAME="Data33_F"/>
+		<EVENT VALUE="1" NAME="Data3E_F"/>
+		<EVENT VALUE="1" NAME="Data3F_F"/>
+		<EVENT VALUE="1" NAME="Data40_F"/>
+		<EVENT VALUE="1" NAME="Data45_F"/>
+		<EVENT VALUE="1" NAME="Data46_F"/>
+		<EVENT VALUE="1" NAME="Data47_F"/>
+		<EVENT VALUE="1" NAME="Data48_F"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataNotOK_F"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataOK_C"/>
+		<OUTPUT VALUE="saida 7" EVENT="tsdok"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataOK_D"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataOK_E"/>
+		<EVENT VALUE="1" NAME="TypeOkSizeOkDataOK_F"/>
+	</EVENTS>
+	<INPUTS>
+		<INPUT EVENT="NotEB"/>
+		<INPUT EVENT="0xEB"/>
+		<INPUT EVENT="Not0x92"/>
+		<INPUT EVENT="0x92"/>
+		<INPUT EVENT="TimerTimeout"/>
+		<INPUT EVENT="Type_NotOk"/>
+		<INPUT EVENT="Type07"/>
+		<INPUT EVENT="Type1A"/>
+		<INPUT EVENT="Type1B"/>
+		<INPUT EVENT="Type1F"/>
+		<INPUT EVENT="Type01"/>
+		<INPUT EVENT="Type02"/>
+		<INPUT EVENT="Type03"/>
+		<INPUT EVENT="Type04"/>
+		<INPUT EVENT="Type05"/>
+		<INPUT EVENT="Size01_C"/>
+		<INPUT EVENT="TypeOkSizeNotOK_C"/>
+		<INPUT EVENT="Size04_D"/>
+		<INPUT EVENT="TypeOkSizeNotOK_D"/>
+		<INPUT EVENT="Size38_E"/>
+		<INPUT EVENT="TypeOkSizeNotOK_E"/>
+		<INPUT EVENT="Size01_F"/>
+		<INPUT EVENT="TypeOkSizeNotOK_F"/>
+		<INPUT EVENT="Cks_NotOk"/>
+		<INPUT EVENT="Cks_Ok"/>
+		<INPUT EVENT="Data00_C"/>
+		<INPUT EVENT="Data01_C"/>
+		<INPUT EVENT="TypeOkSizeOkDataNotOK_C"/>
+		<INPUT EVENT="DataE100E500_D"/>
+		<INPUT EVENT="TypeOkSizeOkDataNotOK_D"/>
+		<INPUT EVENT="Data0x100_E"/>
+		<INPUT EVENT="TypeOkSizeOkDataNotOK_E"/>
+		<INPUT EVENT="Data30_F"/>
+		<INPUT EVENT="Data31_F"/>
+		<INPUT EVENT="Data32_F"/>
+		<INPUT EVENT="Data33_F"/>
+		<INPUT EVENT="Data3E_F"/>
+		<INPUT EVENT="Data3F_F"/>
+		<INPUT EVENT="Data40_F"/>
+		<INPUT EVENT="Data45_F"/>
+		<INPUT EVENT="Data46_F"/>
+		<INPUT EVENT="Data47_F"/>
+		<INPUT EVENT="Data48_F"/>
+		<INPUT EVENT="TypeOkSizeOkDataNotOK_F"/>
+		<INPUT EVENT="TypeOkSizeOkDataOK_C"/>
+		<INPUT EVENT="TypeOkSizeOkDataOK_D"/>
+		<INPUT EVENT="TypeOkSizeOkDataOK_E"/>
+		<INPUT EVENT="TypeOkSizeOkDataOK_F"/>
+	</INPUTS>
+	<OUTPUTS>
+		<OUTPUT EVENT="tok" VALUE="saida 1"/>
+		<OUTPUT EVENT="sok" VALUE="saida 2"/>
+		<OUTPUT EVENT="dok" VALUE="saida 3"/>
+		<OUTPUT EVENT="snok" VALUE="saida 4"/>
+		<OUTPUT EVENT="dnok" VALUE="saida 5"/>
+		<OUTPUT EVENT="tnok" VALUE="saida 6"/>
+		<OUTPUT EVENT="tsdok" VALUE="saida 7"/>
+	</OUTPUTS>
+	<TRANSITIONS>
+		<TRANSITION SOURCE="idleSync" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">NotEB</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="idleSync" DESTINATION="idleSyncExp">
+			<INPUT INTERFACE="L">0xEB</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="idleSyncExp" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">Not0x92</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="idleSyncExp" DESTINATION="countingTimeWaitingType">
+			<INPUT INTERFACE="L">0x92</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">Type_NotOk</INPUT>
+				<OUTPUT INTERFACE="L">tnok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeTypeC">
+			<INPUT INTERFACE="L">Type07</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeTypeD">
+			<INPUT INTERFACE="L">Type1A</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeTypeE">
+			<INPUT INTERFACE="L">Type1B</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeTypeF">
+			<INPUT INTERFACE="L">Type1F</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">Type01</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">Type02</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">Type03</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">Type04</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeWaitingType" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">Type05</INPUT>
+				<OUTPUT INTERFACE="L">tok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeC" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeC" DESTINATION="countingTimeSizeC">
+			<INPUT INTERFACE="L">Size01_C</INPUT>
+				<OUTPUT INTERFACE="L">sok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeC" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeNotOK_C</INPUT>
+				<OUTPUT INTERFACE="L">snok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeD" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeD" DESTINATION="countingTimeSizeD">
+			<INPUT INTERFACE="L">Size04_D</INPUT>
+				<OUTPUT INTERFACE="L">sok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeD" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeNotOK_D</INPUT>
+				<OUTPUT INTERFACE="L">snok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeE" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeE" DESTINATION="countingTimeSizeE">
+			<INPUT INTERFACE="L">Size38_E</INPUT>
+				<OUTPUT INTERFACE="L">sok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeE" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeNotOK_E</INPUT>
+				<OUTPUT INTERFACE="L">snok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeF" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeF" DESTINATION="countingTimeSizeF">
+			<INPUT INTERFACE="L">Size01_F</INPUT>
+				<OUTPUT INTERFACE="L">sok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeTypeF" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeNotOK_F</INPUT>
+				<OUTPUT INTERFACE="L">snok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeChecksum" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeChecksum" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">Cks_NotOk</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeChecksum" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">Cks_Ok</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeC" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeC" DESTINATION="countingTimeDataC">
+			<INPUT INTERFACE="L">Data00_C</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeC" DESTINATION="countingTimeDataC">
+			<INPUT INTERFACE="L">Data01_C</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeC" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataNotOK_C</INPUT>
+				<OUTPUT INTERFACE="L">dnok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeD" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeD" DESTINATION="countingTimeDataD">
+			<INPUT INTERFACE="L">DataE100E500_D</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeD" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataNotOK_D</INPUT>
+				<OUTPUT INTERFACE="L">dnok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeE" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeE" DESTINATION="countingTimeDataE">
+			<INPUT INTERFACE="L">Data0x100_E</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeE" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataNotOK_E</INPUT>
+				<OUTPUT INTERFACE="L">dnok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data30_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data31_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data32_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data33_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data3E_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data3F_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data40_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data45_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data46_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data47_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="countingTimeDataF">
+			<INPUT INTERFACE="L">Data48_F</INPUT>
+				<OUTPUT INTERFACE="L">dok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeSizeF" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataNotOK_F</INPUT>
+				<OUTPUT INTERFACE="L">dnok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataC" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataC" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataOK_C</INPUT>
+				<OUTPUT INTERFACE="L">tsdok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataD" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataD" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataOK_D</INPUT>
+				<OUTPUT INTERFACE="L">tsdok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataE" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataE" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataOK_E</INPUT>
+				<OUTPUT INTERFACE="L">tsdok</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataF" DESTINATION="idleSync">
+			<INPUT INTERFACE="L">TimerTimeout</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="countingTimeDataF" DESTINATION="countingTimeChecksum">
+			<INPUT INTERFACE="L">TypeOkSizeOkDataOK_F</INPUT>
+				<OUTPUT INTERFACE="L">tsdok</OUTPUT>
+	</TRANSITION>
+	</TRANSITIONS>
+</MFEE>

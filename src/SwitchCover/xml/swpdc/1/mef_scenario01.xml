@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet type="text/xsl" href="mfeeTesteX.xsl"?> 
+<MFEE>
+	<STATES>
+		<STATE NAME="pDCOffIdle" TYPE="inicial"/>
+		<STATE NAME="iniMPostCoutingTime" TYPE="normal"/>
+		<STATE NAME="safeMEnteredCoutingTime" TYPE="normal"/>
+		<STATE NAME="safeMVerOpIdle" TYPE="normal"/>
+		<STATE NAME="safeMEPPsOffIdle" TYPE="normal"/>
+		<STATE NAME="pDCOffIdle" TYPE="final"/>
+	</STATES>
+	<EVENTS>
+		<EVENT VALUE="5" NAME="switchPDCOn"/>
+		<OUTPUT VALUE="saida1" EVENT="start60s"/>
+		<EVENT VALUE="5" NAME="POSTOk"/>
+		<EVENT VALUE="5" NAME="endtime"/>
+		<EVENT VALUE="5" NAME="VER_OP_MODE"/>
+		<OUTPUT VALUE="saida2" EVENT="INFO_OP_MODE"/>
+		<EVENT VALUE="5" NAME="switchPDCOff"/>
+	</EVENTS>
+	<INPUTS>
+		<INPUT EVENT="switchPDCOn"/>
+		<INPUT EVENT="POSTOk"/>
+		<INPUT EVENT="endtime"/>
+		<INPUT EVENT="VER_OP_MODE"/>
+		<INPUT EVENT="switchPDCOff"/>
+	</INPUTS>
+	<OUTPUTS>
+		<OUTPUT EVENT="start60s" VALUE="saida1"/>
+		<OUTPUT EVENT="INFO_OP_MODE" VALUE="saida2"/>
+	</OUTPUTS>
+	<TRANSITIONS>
+		<TRANSITION SOURCE="pDCOffIdle" DESTINATION="iniMPostCoutingTime">
+			<INPUT INTERFACE="L">switchPDCOn</INPUT>
+				<OUTPUT INTERFACE="L">start60s</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="iniMPostCoutingTime" DESTINATION="safeMEnteredCoutingTime">
+			<INPUT INTERFACE="L">POSTOk</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEnteredCoutingTime" DESTINATION="safeMVerOpIdle">
+			<INPUT INTERFACE="L">endtime</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMVerOpIdle" DESTINATION="safeMEPPsOffIdle">
+			<INPUT INTERFACE="L">VER_OP_MODE</INPUT>
+				<OUTPUT INTERFACE="L">INFO_OP_MODE</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEPPsOffIdle" DESTINATION="pDCOffIdle">
+			<INPUT INTERFACE="L">switchPDCOff</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+	</TRANSITIONS>
+</MFEE>
