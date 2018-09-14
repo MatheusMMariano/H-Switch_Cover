@@ -65,6 +65,13 @@ public class State {
 		return null;		
 	}
 	
+	public Transition getTransition(State stateDestination) {
+		for(Transition t: transitions){
+			if(t.getDestination() == stateDestination) return t;
+		}	
+		return null;	
+	}
+	
 	public String getName(){
 		return name;
 	}

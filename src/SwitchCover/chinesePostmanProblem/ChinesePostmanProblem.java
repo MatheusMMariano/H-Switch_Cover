@@ -140,24 +140,43 @@ public class ChinesePostmanProblem {
 	}
 	private void addPathToGraph(int source, int destination, int pathLength, Graph graph) {
 		System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
-		
 		List<List<String>> searchSequence = new LinkedList<List<String>>();
 		FirstSearch search = new FirstSearch();
+		State stateTarget = targetState(graph, source);
+		System.out.println("hey0   "+pathLength);
+		searchSequence = search.TESTE(stateTarget, pathLength, graph);
+		
+		System.out.println("hey3");
+		for(List<String> sequence: searchSequence) {
+			if(sequence.get(sequence.size()-1).equals(targetState(graph, destination).getName())) {
+				System.out.println(sequence);
+				
+				for(int i = 0; i < pathLength; i++) {
+					State stateSource = graph.getState(sequence.get(i));
+					State stateDestination = graph.getState(sequence.get(i+1));
+					Transition t = stateSource.getTransition(stateDestination);
+					//PADRAO: toda aresta balanceada recebe o nome de B+nome_original
+					Transition tBalance = new Transition(t.getInput(), t.getOutput(), "B"+t.getName(), t.getDestination(), t.getSource(), false, t.getCounter());
+					stateSource.setTransition(tBalance);
+					System.out.println(t.getSource().getName()+" -> "+t.getDestination().getName());
+				}
+			}
+		}
+	}
+	
+	private State targetState(Graph graph, int target) {
 		Iterator<State> stateList = graph.getIteratorStateValue();
-		
-		
 		int i = 0;
 		while(stateList.hasNext()) {
 			State state = stateList.next();
-			if(i == source) searchSequence = search.breadthFirst(state, graph);
+			if(i == target) {
+				System.out.println("hey1");
+				return state;
+			}
 			i=i+1;
 		}
-		
-		System.out.println("---------------------------------------");
-		for(int j = 0; j < searchSequence.size(); j++) {
-			System.out.print(searchSequence.get(j)+"->");
-		}
-		System.out.println("---------------------------------------");
+		System.out.println("hey2");
+		return null;
 	}
 	
 	private List<Object> convertToDouble(int[][] matrixFW, int[][] desbalancedMatrix) {

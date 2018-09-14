@@ -121,7 +121,7 @@ public class FirstSearch {
 	
 	
 	
-	public List<List<String>> TESTE(State state, State destination, Graph graph){
+	public List<List<String>> TESTE(State state, int length, Graph graph){
 		breadthLine.clear();
 			
 		List<List<String>> listSequence = new LinkedList<List<String>>();
@@ -130,7 +130,7 @@ public class FirstSearch {
 		listSequence.add(list);
 		
 		for(int idList = 0; idList < listSequence.size(); idList++){
-			for(int idElement = 0; idElement < listSequence.get(idList).size(); idElement++){
+			for(int idElement = 0; idElement < length; idElement++){
 				state = graph.getState(listSequence.get(idList).get(idElement));
 				//se N�O foi visitado, pego os filhos
 				if(!state.getVisited()){
