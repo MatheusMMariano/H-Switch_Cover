@@ -39,6 +39,7 @@ public class FirstSearch {
 			stack.remove(stack.size()-1);
 			//System.out.println(">"+listSequence.toString());
 		}
+		graph.refresh(); //não estava antes
 		return listSequence;
 	}
 	
@@ -91,22 +92,24 @@ public class FirstSearch {
 				}
 			}
 		}
-		
+		graph.refresh(); //não estava antes
 		return listSequence;
 	}
 	
 	//BUSCA EM LARGURA
 	//ONLY PRINT
-	private List<String> breadthFirstSearch(State state){
+	public List<String> breadthFirstSearch(State state){
+		breadthLine.clear(); // não estava antes
+		
 		List<Transition> list = new ArrayList<Transition>();
 		state.setVisited(true);
-		
 		list.addAll(state.getTransitions());
 		
 		while(!list.isEmpty()){
 			if(!list.get(0).getVisited()){
 				//System.out.print(list.get(0).getDestination().getName().substring(2)+" | ");
 				breadthLine.add(list.get(0).getName().substring(0, 1));
+				//System.out.println(list.get(0).getSource().getName());
 				//breadthLine.add(list.get(0).getName());
 				list.get(0).setVisited(true);
 				list.addAll(list.get(0).getDestination().getTransitions());
@@ -114,5 +117,39 @@ public class FirstSearch {
 			list.remove(0);
 		}
 		return breadthLine;
+	}
+	
+	
+	
+	public List<List<String>> TESTE(State state, State destination, Graph graph){
+		breadthLine.clear();
+			
+		List<List<String>> listSequence = new LinkedList<List<String>>();
+		List<String> list = new LinkedList<String>();
+		list.add(state.getName());
+		listSequence.add(list);
+		
+		for(int idList = 0; idList < listSequence.size(); idList++){
+			for(int idElement = 0; idElement < listSequence.get(idList).size(); idElement++){
+				state = graph.getState(listSequence.get(idList).get(idElement));
+				//se N�O foi visitado, pego os filhos
+				if(!state.getVisited()){
+					state.setVisited(true);
+					if(state.getTransitions().size() == 1) listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
+					else if(state.getTransitions().size() > 1){
+						listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
+						
+						for(int i = 1; i < state.getTransitions().size(); i++){
+							List<String> listTransitions = new LinkedList<String>();
+							listTransitions.addAll(listSequence.get(idList));
+							listTransitions.set(listTransitions.size()-1, state.getTransitions().get(i).getDestination().getName());
+							listSequence.add(listTransitions);
+						}
+					}
+				}
+			}
+		}
+		graph.refresh(); //não estava antes
+		return listSequence;
 	}
 }

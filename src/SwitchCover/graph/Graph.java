@@ -65,10 +65,18 @@ public class Graph {
 	public Iterator<String> getIteratorState(){
         return statesMap.keySet().iterator();
     }
-    
+	
     public Iterator<State> getIteratorStateValue(){
     	 return statesMap.values().iterator();
     }
+    
+	public void refresh() {
+		Iterator<State> stateList = getIteratorStateValue();
+		while(stateList.hasNext()) {
+			State state = stateList.next();
+			state.setVisited(false);
+		}
+	}
 
 	public HashMap<String, State> getStatesMap() {
 		return statesMap;

@@ -141,9 +141,23 @@ public class ChinesePostmanProblem {
 	private void addPathToGraph(int source, int destination, int pathLength, Graph graph) {
 		System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
 		
+		List<List<String>> searchSequence = new LinkedList<List<String>>();
 		FirstSearch search = new FirstSearch();
-		System.out.println(graph.getState("a").getName());
-		//search.breadthFirst(state, graph)
+		Iterator<State> stateList = graph.getIteratorStateValue();
+		
+		
+		int i = 0;
+		while(stateList.hasNext()) {
+			State state = stateList.next();
+			if(i == source) searchSequence = search.breadthFirst(state, graph);
+			i=i+1;
+		}
+		
+		System.out.println("---------------------------------------");
+		for(int j = 0; j < searchSequence.size(); j++) {
+			System.out.print(searchSequence.get(j)+"->");
+		}
+		System.out.println("---------------------------------------");
 	}
 	
 	private List<Object> convertToDouble(int[][] matrixFW, int[][] desbalancedMatrix) {

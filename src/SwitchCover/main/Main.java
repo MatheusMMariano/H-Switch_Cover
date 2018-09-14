@@ -134,7 +134,9 @@ public class Main {
 					//System.out.println("Step 06");
 					System.out.println("Chinese Postman Problem (CPP)");
 					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
+					System.out.println(graph.showResult());
 					cpp.testCasePCC(graph);
+					System.out.println("------------------------------------------------------------\n");
 					//cpp.testCasePCC(dualGraphConverted);
 				}
 			}
