@@ -132,10 +132,12 @@ public class Main {
 				else{ //Chinese Postman Problem
 					//Step 06: Chinese Postman Problem (CPP)
 					//System.out.println("Step 06");
-					System.out.println("Chinese Postman Problem (CPP)");
+					System.out.println("Chinese Postman Problem (CPP)\n\nOriginal graph");
 					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
 					System.out.println(graph.showResult());
 					cpp.testCasePCC(graph);
+					System.out.println("\nBalanced graph");
+					System.out.println(graph.showResult());
 					System.out.println("------------------------------------------------------------\n");
 					//cpp.testCasePCC(dualGraphConverted);
 				}

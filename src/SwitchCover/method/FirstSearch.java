@@ -123,7 +123,7 @@ public class FirstSearch {
 	
 	public List<List<String>> TESTE(State state, int length, Graph graph){
 		breadthLine.clear();
-			
+		
 		List<List<String>> listSequence = new LinkedList<List<String>>();
 		List<String> list = new LinkedList<String>();
 		list.add(state.getName());

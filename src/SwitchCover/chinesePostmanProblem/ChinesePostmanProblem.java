@@ -120,7 +120,7 @@ public class ChinesePostmanProblem {
 		//Encontrar o maximal matching entre os nos desbalanceados (saber quais deles inserir um caminho)
 		int[][] desbalancedMatrix = desbalancedNodes(matrix);
 		List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
-		HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
+		HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));	
 		int[] HMresult = ha.execute();
 		System.out.print("Maximal Matching: ");
 		for(int w = 0; w < HMresult.length; w++) {
@@ -131,22 +131,33 @@ public class ChinesePostmanProblem {
 		System.out.println("\n\n-------------BALANCING GRAPH-----------");
 		List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
 		double[][] subDesbalancedMatrix = (double[][]) list.get(0);
+		List<List<Transition>> newPath = new LinkedList<>();
 		for(int id = 0; id < HMresult.length; id++) {
 			int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
 			int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
 			int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
-			addPathToGraph(source, destination, pathLength, graph);			
+			newPath.add(newPathToGraph(source, destination, pathLength, graph));			
+		}
+		addPathToGraph(newPath, graph);
+	}
+	
+	private void addPathToGraph(List<List<Transition>> newPath, Graph graph) {
+		for(int i = 0; i < newPath.size(); i++) {
+			for(int j = 0; j < newPath.get(i).size(); j++) {
+				newPath.get(i).get(j).getSource().setTransition(newPath.get(i).get(j));
+			}
 		}
 	}
-	private void addPathToGraph(int source, int destination, int pathLength, Graph graph) {
-		System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
+	
+	
+	private List<Transition> newPathToGraph(int source, int destination, int pathLength, Graph graph) {
+		//System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
 		List<List<String>> searchSequence = new LinkedList<List<String>>();
+		List<Transition> newPath = new LinkedList<Transition>();
 		FirstSearch search = new FirstSearch();
 		State stateTarget = targetState(graph, source);
-		System.out.println("hey0   "+pathLength);
 		searchSequence = search.TESTE(stateTarget, pathLength, graph);
 		
-		System.out.println("hey3");
 		for(List<String> sequence: searchSequence) {
 			if(sequence.get(sequence.size()-1).equals(targetState(graph, destination).getName())) {
 				System.out.println(sequence);
@@ -157,11 +168,14 @@ public class ChinesePostmanProblem {
 					Transition t = stateSource.getTransition(stateDestination);
 					//PADRAO: toda aresta balanceada recebe o nome de B+nome_original
 					Transition tBalance = new Transition(t.getInput(), t.getOutput(), "B"+t.getName(), t.getDestination(), t.getSource(), false, t.getCounter());
-					stateSource.setTransition(tBalance);
+					//stateSource.setTransition(tBalance);
+					newPath.add(tBalance);
 					System.out.println(t.getSource().getName()+" -> "+t.getDestination().getName());
 				}
 			}
 		}
+		
+		return newPath;
 	}
 	
 	private State targetState(Graph graph, int target) {
@@ -170,12 +184,10 @@ public class ChinesePostmanProblem {
 		while(stateList.hasNext()) {
 			State state = stateList.next();
 			if(i == target) {
-				System.out.println("hey1");
 				return state;
 			}
 			i=i+1;
 		}
-		System.out.println("hey2");
 		return null;
 	}
 	
