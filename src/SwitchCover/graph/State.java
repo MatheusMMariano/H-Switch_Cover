@@ -12,7 +12,7 @@ public class State {
 	private String typeState = new String();
 	
 	private int counter = 0;
-	private int ponderosity = 0; //peso
+	private int ponderosity = 1; //peso
 	//private float ponderosity = 0; //peso
 	private int idCPP = 0;
 	
@@ -27,7 +27,7 @@ public class State {
 		this.visited = false;
 		this.initialSequence = false;
 		this.counter = 0;
-		this.ponderosity = 0;
+		this.ponderosity = 1;
 	}
 	
 	public State(String name){
@@ -37,7 +37,7 @@ public class State {
 		this.visited = false;
 		this.initialSequence = false;
 		this.counter = 0;
-		this.ponderosity = 0;
+		this.ponderosity = 1;
 	}
 	
 	public State(String name, String typeState){
@@ -47,7 +47,7 @@ public class State {
 		this.visited = false;
 		this.initialSequence = false;
 		this.counter = 0;
-		this.ponderosity = 0;
+		this.ponderosity = 1;
 	}
 	
 	public void setTransition(Transition t){

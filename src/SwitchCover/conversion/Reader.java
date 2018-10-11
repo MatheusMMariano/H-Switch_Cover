@@ -78,27 +78,32 @@ public class Reader {
 				//if it exist, insert the variables 'input' and 'output' as true
 				while(iterator.hasNext()){
 					State state = iterator.next();
-					if(state.getName().equals(line.substring(0, line.indexOf("-")-1))) input = true;
-					if(state.getName().equals(line.substring(line.indexOf("-> ")+3, line.length()))) output = true;
+					//if(state.getName().equals(line.substring(0, line.indexOf("-")-1))) input = true;
+					//if(state.getName().equals(line.substring(line.indexOf("-> ")+3, line.length()))) output = true;
+					if(state.getName().equals(line.substring(0, 1))) input = true;
+					if(state.getName().equals(line.substring(line.length()-1, line.length()))) output = true;
 				}
 				
 				//check if state is the first one; if yes, so it is a initial state
 				//this condition is check only once
 				if(check){
 					//maybe I defines the map of initial state like 'initial' instead of state name in future releases
-					graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "inicial"));
+					//graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "inicial"));
+					graph.setStateMap(line.substring(0, 1), new State(line.substring(0, 1), "inicial"));
 					check = false;
 				}
 				//check if the state exist in graph; if exist, don't input it in graph
 				else if(!input) {
-					graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "normal"));
+					//graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "normal"));
+					graph.setStateMap(line.substring(0, 1), new State(line.substring(0, 1), "normal"));
 				}
 				if(!output && !line.substring(line.indexOf("-> ")+3, line.length()).equals(line.substring(0, line.indexOf("-")-1))){
-					graph.setStateMap(line.substring(line.indexOf("-> ")+3, line.length()), new State(line.substring(line.indexOf("-> ")+3, line.length()), "normal"));
+					//graph.setStateMap(line.substring(line.indexOf("-> ")+3, line.length()), new State(line.substring(line.indexOf("-> ")+3, line.length()), "normal"));
+					graph.setStateMap(line.substring(line.length()-1, line.length()), new State(line.substring(line.length()-1, line.length()), "normal"));
 				}
 				
 				//input the transition in inicial state
-				Transition t = new Transition();
+				/*Transition t = new Transition();
 				t.setName(line.substring(line.indexOf("-- ")+3, line.indexOf("-> ")-1));
 				t.setSource(graph.getState(line.substring(0, line.indexOf("-")-1)));
 				t.setDestination(graph.getState(line.substring(line.indexOf("-> ")+3, line.length())));
@@ -110,7 +115,16 @@ public class Reader {
 				//t.setOutput(line.substring(line.indexOf("-> ")+3, line.length()));
 				
 				t.setVisited(false);
-				graph.getState(line.substring(0, line.indexOf("-")-1)).setTransition(t);
+				graph.getState(line.substring(0, line.indexOf("-")-1)).setTransition(t);*/
+				
+				Transition t = new Transition();
+				t.setName(line.substring(5, 10));
+				t.setSource(graph.getState(line.substring(0, 1)));
+				t.setDestination(graph.getState(line.substring(line.length()-1, line.length())));
+				t.setInput(line.substring(0, 1)+">"+line.substring(5, 6));
+				t.setOutput(line.substring(9, 10));
+				t.setVisited(false);
+				graph.getState(line.substring(0, 1)).setTransition(t);
 			}
 			input = false;
 			output = false;

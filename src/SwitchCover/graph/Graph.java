@@ -11,11 +11,25 @@ import org.xml.sax.SAXException;
 
 import SwitchCover.parserSax.*;
 
-public class Graph {
+public class Graph implements Cloneable{
 	
 	private XMLFile file = new XMLFile();
 	private SAXHandler handler = new SAXHandler(this);
-    private HashMap<String, State> statesMap = new LinkedHashMap<String, State>();
+    private HashMap<String, State> statesMap = new HashMap<String, State>();
+    
+    /*public Graph clone() throws CloneNotSupportedException {
+    	return (Graph) super.clone();
+    }*/
+    
+    public Graph clone() {
+    	try {
+			return (Graph) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+    }
 
 	public Graph openXML(String dirXML) throws ParserConfigurationException, SAXException, IOException{
 		file.readFile(dirXML, handler);

@@ -22,8 +22,9 @@ public class ChinesePostmanProblem {
 		for(int r = 0; r < size; r++){
 			for(int c = 0; c < size; c++){
 				//matriz[r][c] = Integer.MAX_VALUE;
-				if(r == c) matriz[r][c] = 0;
-				else matriz[r][c] = INF;
+				//if(r == c) matriz[r][c] = 0;
+				//else matriz[r][c] = INF;
+				matriz[r][c] = INF;
 			}
 		}
 		return matriz;
@@ -42,21 +43,17 @@ public class ChinesePostmanProblem {
 	
 	public int[][] createMatriz(Graph graph, int i){
 		int [][] matriz = new int[i][i];
-		matriz = insertValueMatriz(matriz, i); //now every vector's point have INTERGER.MAX_VALUE
+		matriz = insertValueMatriz(matriz, i);
 		
 		Iterator<State> row = graph.getIteratorStateValue();
-		
 		while(row.hasNext()){
 			State s = row.next();
-			
 			for(Transition t : s.getTransitions()){
-				//System.out.println(">State: "+s.getIdCPP()+"\n   |- " +t.getDestination().getIdCPP());
 				int r = s.getIdCPP();
 				int c = t.getDestination().getIdCPP();
 				matriz[r][c] = s.getPonderosity();
 			}
 		}
-		
 		return matriz;
 	}
 	
@@ -85,60 +82,68 @@ public class ChinesePostmanProblem {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void testCasePCC(Graph graph){
-		
+	private void setIdCpp(Graph graph) {
 		Iterator<State> stateList = graph.getIteratorStateValue();
 		int i = 0;
-
+		
 		while(stateList.hasNext()){
 			State state = stateList.next();
-			// (saída - entrada) --- getTransitions() = saída / sumInTransition() = entrada
-			//state.setPonderosity(state.getTransitions().size() - sumInTransition(graph, state));
-			state.setPonderosity(1);
 			state.setIdCPP(i);
 			i++;
 		}
-		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Graph testCasePCC(Graph graph){
 		//https://www-m9.ma.tum.de/graph-algorithms/spp-floyd-warshall/index_en.html
-		
-		//Matriz do grafo
-		System.out.println("\n-------------MATRIX--------------");
+
+		//Step 1: Convert graph in a adjacent matrix
+		setIdCpp(graph);
 		int[][] matrix = createMatriz(graph, size(graph));
-		/*int[][] matrix = {{0,   1, INF,   1},
-						  {1,   0, INF, INF},
-						  {1,   1,   0, INF},
-						  {INF, 1,   1,   0}};*/
-		showTest(matrix);
 		
-		//Encontrar o caminho minimo partindo de um no para outro
-		System.out.println("\n-------------FLOYD WARSHAL--------------");
+		//Step 2: Floyd-Warshal - find a minimal path between 2 nodes
 		FloydWarshall2 fw = new FloydWarshall2();
 		int[][] matrixFW = fw.main(matrix);
 		
-		System.out.println("\n-------------HUNGARIAN METHOD-----------");
-		//Encontrar o maximal matching entre os nos desbalanceados (saber quais deles inserir um caminho)
+		//Check if the graph is balanced
 		int[][] desbalancedMatrix = desbalancedNodes(matrix);
-		List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
-		HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));	
-		int[] HMresult = ha.execute();
-		System.out.print("Maximal Matching: ");
-		for(int w = 0; w < HMresult.length; w++) {
-			System.out.print(HMresult[w] +", ");
+		boolean balanced = true;
+		for(int x = 0; x < desbalancedMatrix.length; x++) {
+			if(desbalancedMatrix[0][x] != 0) {
+				balanced = false;
+				break;
+			}
 		}
 		
-		//Inserir um caminho partindo de um no negativo pra um positivo
-		System.out.println("\n\n-------------BALANCING GRAPH-----------");
-		List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
-		double[][] subDesbalancedMatrix = (double[][]) list.get(0);
-		List<List<Transition>> newPath = new LinkedList<>();
-		for(int id = 0; id < HMresult.length; id++) {
-			int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
-			int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
-			int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
-			newPath.add(newPathToGraph(source, destination, pathLength, graph));			
+		if(balanced) {
+			System.out.println("This graph is balanced!");
+			return graph;
 		}
-		addPathToGraph(newPath, graph);
+		else {
+			//Step 3: Hungarian method - find the maximal matching between the desbalanced nodes to find a path between then
+			List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
+			HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
+			int[] HMresult = ha.execute();
+			
+			/*System.out.print("Maximal Matching: ");
+			for(int w = 0; w < HMresult.length; w++) {
+				System.out.print(HMresult[w] +", ");
+			}*/
+			
+			//Step 4: insert a path from a negative node to a positive node (balancing the graph)
+			List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
+			double[][] subDesbalancedMatrix = (double[][]) list.get(0);
+			List<List<Transition>> newPath = new LinkedList<>();
+			for(int id = 0; id < HMresult.length; id++) {
+				int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
+				int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
+				int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
+				newPath.add(newPathToGraph(source, destination, pathLength, graph));
+			}
+			
+			addPathToGraph(newPath, graph);
+			return graph;
+		}
 	}
 	
 	private void addPathToGraph(List<List<Transition>> newPath, Graph graph) {
@@ -149,18 +154,18 @@ public class ChinesePostmanProblem {
 		}
 	}
 	
-	
 	private List<Transition> newPathToGraph(int source, int destination, int pathLength, Graph graph) {
 		//System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
 		List<List<String>> searchSequence = new LinkedList<List<String>>();
 		List<Transition> newPath = new LinkedList<Transition>();
 		FirstSearch search = new FirstSearch();
 		State stateTarget = targetState(graph, source);
-		searchSequence = search.TESTE(stateTarget, pathLength, graph);
+		State stateDestin = targetState(graph, destination);
+		searchSequence = search.TESTE(stateTarget, stateDestin, pathLength, graph);
 		
 		for(List<String> sequence: searchSequence) {
 			if(sequence.get(sequence.size()-1).equals(targetState(graph, destination).getName())) {
-				System.out.println(sequence);
+				//System.out.println(sequence);
 				
 				for(int i = 0; i < pathLength; i++) {
 					State stateSource = graph.getState(sequence.get(i));
@@ -170,7 +175,7 @@ public class ChinesePostmanProblem {
 					Transition tBalance = new Transition(t.getInput(), t.getOutput(), "B"+t.getName(), t.getDestination(), t.getSource(), false, t.getCounter());
 					//stateSource.setTransition(tBalance);
 					newPath.add(tBalance);
-					System.out.println(t.getSource().getName()+" -> "+t.getDestination().getName());
+					//System.out.println(t.getSource().getName()+" -> "+t.getDestination().getName());
 				}
 			}
 		}
@@ -216,18 +221,33 @@ public class ChinesePostmanProblem {
 				positiveNode = positiveNode + 1;
 			}
 		}
-		
-		double[][] subDesbalancedMatrix = new double[sub.size()][sub.get(0).size()];
-		for(int k = 0; k < sub.size(); k++) {
-			for(int l = 0; l < sub.get(k).size(); l++) {
-				subDesbalancedMatrix[k][l] = sub.get(k).get(l); 
+		if(sub.size() == 0) {
+			double[][] subDesbalancedMatrix = new double[matrixFW.length][matrixFW.length];
+			for(int k = 0; k < matrixFW.length; k++) {
+				for(int l = 0; l < matrixFW.length; l++) {
+					subDesbalancedMatrix[k][l] = 0.0; 
+				}
 			}
+			List<Object> a = new ArrayList<Object>();
+			a.add(subDesbalancedMatrix);
+			a.add(originalIDMatrix);
+			
+			return a;
 		}
-		List<Object> a = new ArrayList<Object>();
-		a.add(subDesbalancedMatrix);
-		a.add(originalIDMatrix);
+		else {
+			double[][] subDesbalancedMatrix = new double[sub.size()][sub.size()];
+			for(int k = 0; k < sub.size(); k++) {
+				for(int l = 0; l < sub.size(); l++) {
+					subDesbalancedMatrix[k][l] = sub.get(k).get(l); 
+				}
+			}
+			List<Object> a = new ArrayList<Object>();
+			a.add(subDesbalancedMatrix);
+			a.add(originalIDMatrix);
+			
+			return a;
+		}
 		
-		return a;
 		/*double[][] ma = {{3.0,1.0,2.0},
 						 {2.0,3.0,2.0},
 						 {2.0,3.0,2.0}};

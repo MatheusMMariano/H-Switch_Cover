@@ -73,7 +73,9 @@ public class NodeConverter {
 			if(!checkDuplicationTransition(newGraph, newTransition.getInput())){
 				
 				State state = new State();
-				if(!(newTransition.getOutput() == null)) state.setName(newTransition.getInput()+"/"+newTransition.getOutput());
+				if(!(newTransition.getOutput() == null)) {
+					state.setName(newTransition.getInput()+"/"+newTransition.getOutput());
+				}
 				else state.setName(newTransition.getInput());
 				
 				//if(newTransition.getSource().getTypeState().equals("inicial") && newTransition.getInput().equals("0>0")) state.setTypeState("inicial");

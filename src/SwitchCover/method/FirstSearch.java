@@ -75,11 +75,11 @@ public class FirstSearch {
 		for(int idList = 0; idList < listSequence.size(); idList++){
 			for(int idElement = 0; idElement < listSequence.get(idList).size(); idElement++){
 				state = graph.getState(listSequence.get(idList).get(idElement));
-				//se N�O foi visitado, pego os filhos
+				//se NAO foi visitado, pego os filhos
 				if(!state.getVisited()){
 					state.setVisited(true);
 					if(state.getTransitions().size() == 1) listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
-					else if(state.getTransitions().size() > 1){
+					else /*if(state.getTransitions().size() > 1)*/{
 						listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
 						
 						for(int i = 1; i < state.getTransitions().size(); i++){
@@ -121,8 +121,9 @@ public class FirstSearch {
 	
 	
 	
-	public List<List<String>> TESTE(State state, int length, Graph graph){
+	public List<List<String>> TESTE(State state, State dest, int length, Graph graph){
 		breadthLine.clear();
+		//System.out.println("> "+ state.getName()+" -> "+ dest.getName());
 		
 		List<List<String>> listSequence = new LinkedList<List<String>>();
 		List<String> list = new LinkedList<String>();
@@ -131,11 +132,18 @@ public class FirstSearch {
 		
 		for(int idList = 0; idList < listSequence.size(); idList++){
 			for(int idElement = 0; idElement < length; idElement++){
-				state = graph.getState(listSequence.get(idList).get(idElement));
-				//se N�O foi visitado, pego os filhos
+				//System.out.println("\n> id list: "+idList+" / id element: "+ idElement+" / list sequence size: "+listSequence.size()+" / list sequence by id list: "+listSequence.get(idList).size()); //ERRO AQUI SO NO DUAL GRAPH
+				//System.out.println("Estado atual: "+state.getName()+" / Visitado: "+state.getVisited());
+				//System.out.println(listSequence);
+				if(idElement < listSequence.get(idList).size()) state = graph.getState(listSequence.get(idList).get(idElement));
+				
 				if(!state.getVisited()){
+					//if(state.getName().equals(dest.getName())) break;
 					state.setVisited(true);
-					if(state.getTransitions().size() == 1) listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
+
+					if(state.getTransitions().size() == 1) {
+						listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
+					}
 					else if(state.getTransitions().size() > 1){
 						listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
 						
@@ -149,6 +157,7 @@ public class FirstSearch {
 				}
 			}
 		}
+		//System.out.println("\n");
 		graph.refresh(); //não estava antes
 		return listSequence;
 	}
