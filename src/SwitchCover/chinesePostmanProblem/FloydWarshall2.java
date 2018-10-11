@@ -101,13 +101,13 @@ class FloydWarshall2 {
 	public int[][] main(int[][] g) {
 		/*
 		 * Let us create the following weighted graph 10
-		 */
+		
 		int graph[][] = { {  0,  1,  1}, 
 						  {INF,  0,  1}, 
 						  {  1,  1,  0}};
-		FloydWarshall2 a = new FloydWarshall2();
+		 */
 		
-		// Print the solution
+		FloydWarshall2 a = new FloydWarshall2();
 		return a.floydWarshall(g);
 	}
 }

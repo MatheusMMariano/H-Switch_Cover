@@ -164,7 +164,7 @@ public class Main {
 					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
 					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", cpp.testCasePCC(graph.clone()));
 					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()));
-					System.out.println("\n");
+					//System.out.println("\n");
 				}
 			}
 		}
@@ -194,7 +194,7 @@ public class Main {
 					if(!pathMEF.getName().equals(".DS_Store")){
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								//if(pathNumber.getName().equals("105")) {
+								if(pathNumber.getName().equals("108")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -215,7 +215,7 @@ public class Main {
 											main.createGraphTestCase(path, file.getName(), typeFile, i);
 										}
 									}
-								//}
+								}
 								}
 							}
 						}

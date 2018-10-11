@@ -18,45 +18,6 @@ public class ChinesePostmanProblem {
 		
 	}
 	
-	public int[][] insertValueMatriz(int[][] matriz, int size){
-		for(int r = 0; r < size; r++){
-			for(int c = 0; c < size; c++){
-				//matriz[r][c] = Integer.MAX_VALUE;
-				//if(r == c) matriz[r][c] = 0;
-				//else matriz[r][c] = INF;
-				matriz[r][c] = INF;
-			}
-		}
-		return matriz;
-	}
-	
-	public int size(Graph graph){
-		Iterator<State> itGraph = graph.getIteratorStateValue();
-		int i = 0;
-		
-		while(itGraph.hasNext()){
-			i++;
-			itGraph.next();
-		}
-		return i;
-	}
-	
-	public int[][] createMatriz(Graph graph, int i){
-		int [][] matriz = new int[i][i];
-		matriz = insertValueMatriz(matriz, i);
-		
-		Iterator<State> row = graph.getIteratorStateValue();
-		while(row.hasNext()){
-			State s = row.next();
-			for(Transition t : s.getTransitions()){
-				int r = s.getIdCPP();
-				int c = t.getDestination().getIdCPP();
-				matriz[r][c] = s.getPonderosity();
-			}
-		}
-		return matriz;
-	}
-	
 	public int sumInTransition(Graph graph, State st){
 		Iterator<State> stateList = graph.getIteratorStateValue();
 		int total = 0;
@@ -70,7 +31,7 @@ public class ChinesePostmanProblem {
 		return total;
 	}
 	
-	public void showTest(int[][] matriz){
+	public void show(int[][] matriz){
 		for(int i = 0; i < matriz.length; i++){
 			for(int j = 0; j < matriz.length; j++){
 				
@@ -93,6 +54,45 @@ public class ChinesePostmanProblem {
 		}
 	}
 	
+	public int size(Graph graph){
+		Iterator<State> itGraph = graph.getIteratorStateValue();
+		int i = 0;
+		
+		while(itGraph.hasNext()){
+			i++;
+			itGraph.next();
+		}
+		return i;
+	}
+	
+	public int[][] insertValueMatriz(int[][] matriz, int size){
+		for(int r = 0; r < size; r++){
+			for(int c = 0; c < size; c++){
+				//matriz[r][c] = Integer.MAX_VALUE;
+				//if(r == c) matriz[r][c] = 0;
+				//else matriz[r][c] = INF;
+				matriz[r][c] = INF;
+			}
+		}
+		return matriz;
+	}
+	
+	public int[][] createMatriz(Graph graph, int i){
+		int [][] matriz = new int[i][i];
+		matriz = insertValueMatriz(matriz, i);
+		
+		Iterator<State> row = graph.getIteratorStateValue();
+		while(row.hasNext()){
+			State s = row.next();
+			for(Transition t : s.getTransitions()){
+				int r = s.getIdCPP();
+				int c = t.getDestination().getIdCPP();
+				matriz[r][c] = s.getPonderosity();
+			}
+		}
+		return matriz;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Graph testCasePCC(Graph graph){
 		//https://www-m9.ma.tum.de/graph-algorithms/spp-floyd-warshall/index_en.html
@@ -100,18 +100,23 @@ public class ChinesePostmanProblem {
 		//Step 1: Convert graph in a adjacent matrix
 		setIdCpp(graph);
 		int[][] matrix = createMatriz(graph, size(graph));
+		//show(matrix);
 		
 		//Step 2: Floyd-Warshal - find a minimal path between 2 nodes
 		FloydWarshall2 fw = new FloydWarshall2();
 		int[][] matrixFW = fw.main(matrix);
+		//System.out.println();
+		//show(matrixFW);
 		
 		//Check if the graph is balanced
 		int[][] desbalancedMatrix = desbalancedNodes(matrix);
-		boolean balanced = true;
+		/*boolean balanced = true;
 		for(int x = 0; x < desbalancedMatrix.length; x++) {
-			if(desbalancedMatrix[0][x] != 0) {
-				balanced = false;
-				break;
+			for(int y = 0; y < desbalancedMatrix.length; y++) {	
+				if(desbalancedMatrix[x][y] != 0) {
+					balanced = false;
+					break;
+				}
 			}
 		}
 		
@@ -119,7 +124,7 @@ public class ChinesePostmanProblem {
 			System.out.println("This graph is balanced!");
 			return graph;
 		}
-		else {
+		else {*/
 			//Step 3: Hungarian method - find the maximal matching between the desbalanced nodes to find a path between then
 			List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
 			HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
@@ -144,7 +149,7 @@ public class ChinesePostmanProblem {
 			addPathToGraph(newPath, graph);
 			return graph;
 		}
-	}
+	//}
 	
 	private void addPathToGraph(List<List<Transition>> newPath, Graph graph) {
 		for(int i = 0; i < newPath.size(); i++) {
