@@ -25,7 +25,6 @@ public class Graph implements Cloneable{
     	try {
 			return (Graph) super.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

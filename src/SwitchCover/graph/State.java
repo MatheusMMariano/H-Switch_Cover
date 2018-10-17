@@ -20,6 +20,10 @@ public class State {
 	private boolean visited = false;
 	private boolean initialSequence = false;
 	
+	
+	private boolean pre_process = false;
+	private State pre_processStateSource = null;
+	
 	public State(){
 		this.name = "";
 		this.typeState = "";
@@ -28,6 +32,8 @@ public class State {
 		this.initialSequence = false;
 		this.counter = 0;
 		this.ponderosity = 1;
+		this.pre_process = false;
+		this.pre_processStateSource = null;
 	}
 	
 	public State(String name){
@@ -38,6 +44,8 @@ public class State {
 		this.initialSequence = false;
 		this.counter = 0;
 		this.ponderosity = 1;
+		this.pre_process = false;
+		this.pre_processStateSource = null;
 	}
 	
 	public State(String name, String typeState){
@@ -48,6 +56,20 @@ public class State {
 		this.initialSequence = false;
 		this.counter = 0;
 		this.ponderosity = 1;
+		this.pre_process = false;
+		this.pre_processStateSource = null;
+	}
+	
+	public State(String name, String typeState, Boolean pre_process, State pre_processStateSource){
+		this.name = name;
+		this.typeState = typeState;
+		this.balancedStatus = false;
+		this.visited = false;
+		this.initialSequence = false;
+		this.counter = 0;
+		this.ponderosity = 1;
+		this.pre_process = pre_process;
+		this.pre_processStateSource = pre_processStateSource;
 	}
 	
 	public void setTransition(Transition t){
@@ -143,7 +165,16 @@ public class State {
 	public int getIdCPP(){
 		return idCPP;
 	}
+	
 	public void setIdCPP(int idCPP){
 		this.idCPP = idCPP;
+	}
+	
+	public boolean getPre_process() {
+		return this.pre_process;
+	}
+	
+	public State getPre_processStateSource() {
+		return this.pre_processStateSource;
 	}
 }

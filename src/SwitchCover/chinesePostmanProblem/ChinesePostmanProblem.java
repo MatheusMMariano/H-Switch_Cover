@@ -43,12 +43,25 @@ public class ChinesePostmanProblem {
 		}
 	}
 	
+	public void show(double[][] matriz){
+		for(int i = 0; i < matriz.length; i++){
+			for(int j = 0; j < matriz.length; j++){
+				
+				if(matriz[i][j] == INF) System.out.print("  |");
+				else if(matriz[i][j] >= 0) System.out.print(" "+matriz[i][j]+"|");
+				else System.out.print(matriz[i][j]+"|");
+			}
+			System.out.print("\n");
+		}
+	}
+	
 	private void setIdCpp(Graph graph) {
 		Iterator<State> stateList = graph.getIteratorStateValue();
 		int i = 0;
 		
 		while(stateList.hasNext()){
 			State state = stateList.next();
+			System.out.println(state.getName());
 			state.setIdCPP(i);
 			i++;
 		}
@@ -100,56 +113,44 @@ public class ChinesePostmanProblem {
 		//Step 1: Convert graph in a adjacent matrix
 		setIdCpp(graph);
 		int[][] matrix = createMatriz(graph, size(graph));
-		//show(matrix);
+		System.out.println("\n");
+		show(matrix);
 		
 		//Step 2: Floyd-Warshal - find a minimal path between 2 nodes
 		FloydWarshall2 fw = new FloydWarshall2();
 		int[][] matrixFW = fw.main(matrix);
-		//System.out.println();
-		//show(matrixFW);
+		System.out.println();
+		show(matrixFW);
 		
-		//Check if the graph is balanced
 		int[][] desbalancedMatrix = desbalancedNodes(matrix);
-		/*boolean balanced = true;
-		for(int x = 0; x < desbalancedMatrix.length; x++) {
-			for(int y = 0; y < desbalancedMatrix.length; y++) {	
-				if(desbalancedMatrix[x][y] != 0) {
-					balanced = false;
-					break;
-				}
-			}
+		//Step 3: Hungarian method - find the maximal matching between the desbalanced nodes to find a path between then
+		List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
+		HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
+		System.out.println("\n");
+		show((double[][]) list.get(0));
+		int[] HMresult = ha.execute();
+			
+		System.out.print("\n\nMaximal Matching: ");
+		for(int w = 0; w < HMresult.length; w++) {
+			System.out.print(HMresult[w] +", ");
 		}
+		System.out.println("\n");
+			
+		//Step 4: insert a path from a negative node to a positive node (balancing the graph)
+		List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
+		double[][] subDesbalancedMatrix = (double[][]) list.get(0);
+		List<List<Transition>> newPath = new LinkedList<>();
 		
-		if(balanced) {
-			System.out.println("This graph is balanced!");
-			return graph;
+		for(int id = 0; id < HMresult.length; id++) {
+			int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
+			int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
+			int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
+			newPath.add(newPathToGraph(source, destination, pathLength, graph));
 		}
-		else {*/
-			//Step 3: Hungarian method - find the maximal matching between the desbalanced nodes to find a path between then
-			List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
-			HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
-			int[] HMresult = ha.execute();
 			
-			/*System.out.print("Maximal Matching: ");
-			for(int w = 0; w < HMresult.length; w++) {
-				System.out.print(HMresult[w] +", ");
-			}*/
-			
-			//Step 4: insert a path from a negative node to a positive node (balancing the graph)
-			List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
-			double[][] subDesbalancedMatrix = (double[][]) list.get(0);
-			List<List<Transition>> newPath = new LinkedList<>();
-			for(int id = 0; id < HMresult.length; id++) {
-				int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
-				int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
-				int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
-				newPath.add(newPathToGraph(source, destination, pathLength, graph));
-			}
-			
-			addPathToGraph(newPath, graph);
-			return graph;
-		}
-	//}
+		addPathToGraph(newPath, graph);
+		return graph;
+	}
 	
 	private void addPathToGraph(List<List<Transition>> newPath, Graph graph) {
 		for(int i = 0; i < newPath.size(); i++) {
@@ -226,6 +227,7 @@ public class ChinesePostmanProblem {
 				positiveNode = positiveNode + 1;
 			}
 		}
+		
 		if(sub.size() == 0) {
 			double[][] subDesbalancedMatrix = new double[matrixFW.length][matrixFW.length];
 			for(int k = 0; k < matrixFW.length; k++) {
