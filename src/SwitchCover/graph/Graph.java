@@ -15,7 +15,7 @@ public class Graph implements Cloneable{
 	
 	private XMLFile file = new XMLFile();
 	private SAXHandler handler = new SAXHandler(this);
-    private HashMap<String, State> statesMap = new HashMap<String, State>();
+    private HashMap<String, State> statesMap = new HashMap<String, State>(); //HashMap or LinkedHashMap
     
     /*public Graph clone() throws CloneNotSupportedException {
     	return (Graph) super.clone();

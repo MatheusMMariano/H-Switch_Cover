@@ -13,13 +13,12 @@ public class State {
 	
 	private int counter = 0;
 	private int ponderosity = 1; //peso
-	//private float ponderosity = 0; //peso
 	private int idCPP = 0;
 	
 	private boolean balancedStatus = false;
 	private boolean visited = false;
 	private boolean initialSequence = false;
-	
+	private boolean comecouSeq = false;
 	
 	private boolean pre_process = false;
 	private State pre_processStateSource = null;
@@ -176,5 +175,13 @@ public class State {
 	
 	public State getPre_processStateSource() {
 		return this.pre_processStateSource;
+	}
+	
+	public boolean getComecouSeq() {
+		return comecouSeq;
+	}
+
+	public void setComecouSeq(boolean comecouSeq) {
+		this.comecouSeq = comecouSeq;
 	}
 }

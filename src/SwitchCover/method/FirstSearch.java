@@ -118,10 +118,9 @@ public class FirstSearch {
 		}
 		return breadthLine;
 	}
-	
-	
-	
+
 	public List<List<String>> TESTE(State state, State dest, int length, Graph graph){
+		graph.refresh();
 		breadthLine.clear();
 		//System.out.println("> "+ state.getName()+" -> "+ dest.getName());
 		
@@ -133,11 +132,11 @@ public class FirstSearch {
 		for(int idList = 0; idList < listSequence.size(); idList++){
 			for(int idElement = 0; idElement < length; idElement++){
 				//System.out.println("\n> id list: "+idList+" / id element: "+ idElement+" / list sequence size: "+listSequence.size()+" / list sequence by id list: "+listSequence.get(idList).size()); //ERRO AQUI SO NO DUAL GRAPH
-				//System.out.println("Estado atual: "+state.getName()+" / Visitado: "+state.getVisited());
-				//System.out.println(listSequence);
+				
 				if(idElement < listSequence.get(idList).size()) state = graph.getState(listSequence.get(idList).get(idElement));
 				
 				if(!state.getVisited()){
+					//System.out.println("Estado atual: "+state.getName()+" / Visitado: "+state.getVisited());
 					//if(state.getName().equals(dest.getName())) break;
 					state.setVisited(true);
 

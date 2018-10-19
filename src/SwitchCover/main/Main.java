@@ -19,6 +19,7 @@ import SwitchCover.graph.Transition;
 import SwitchCover.method.Balancing;
 import SwitchCover.method.FirstSearch;
 import SwitchCover.method.GenerateTestCase;
+import SwitchCover.method.GeraCasosTeste;
 import SwitchCover.method.NodeConverter;
 
 public class Main {
@@ -104,16 +105,20 @@ public class Main {
 	}
 	
 	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
-		GenerateTestCase testCaseBreadthFirstSearch = new GenerateTestCase(graphBalanced);
-		List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
+		//GenerateTestCase testCaseBreadthFirstSearch = new GenerateTestCase(graphBalanced);
+		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
+		GeraCasosTeste testCaseBreadthFirstSearch = new GeraCasosTeste(graphBalanced);
+		List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.inicio();
+		
 		List<String> testListSequence = new LinkedList<String>();
 		
 		for(List<State> listState: testSequenceBreadth){
 			if(!listState.isEmpty()){
 				String testList = "";
 				for(State state: listState) {
-					if(typeGraph) testList = testList + (state.getName());
-					else testList = testList + (state.getName().substring(2, 3));
+					testList = testList + (state.getName()) + ",";
+					//if(typeGraph) testList = testList + (state.getName());
+					//else testList = testList + (state.getName().substring(2, 3));
 				}
 				testListSequence.add(testList);
 			}
@@ -124,27 +129,24 @@ public class Main {
 		if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.lastIndexOf("/"))+"/"+name+".txt", testListSequence);
 		else reader.insertFile("src/"+path.substring(0, path.lastIndexOf("/"))+"/"+name+".txt", testListSequence);		
 	}
-	
+
 	private Graph preProcess(Graph graph) {
-		List<State> _stateList = new LinkedList<State>();
 		Iterator<State> stateList = graph.getIteratorStateValue();
+		List<State> _stateList = new LinkedList<State>();
 		
 		while(stateList.hasNext()) {
 			State state = stateList.next();
 			List<Transition> transitionList = state.getTransitions();
-			List<Transition> repets = new LinkedList<Transition>();
 			
-			for(Transition t: transitionList) {
-				if(repets.isEmpty()) repets.add(t);
-				else {
-					for(Transition tr: repets) {
-						if(t.getDestination().getName().equals(tr.getDestination().getName())) {
-							State _state = new State(state.getName()+"."+t.getInput(), "normal", true, state);
-							Transition _transition = new Transition("0", t.getOutput(), t.getName(), t.getDestination(), _state, false, 0);
-							_state.setTransition(_transition);
-							t.setDestination(_state);
-							_stateList.add(_state);
-						}
+			for(int i = 0; i < transitionList.size(); i++) {
+				for(int j = i+1; j < transitionList.size(); j++) {
+					if(transitionList.get(i).getDestination().getName().equals(transitionList.get(j).getDestination().getName())) {
+						Transition t = transitionList.get(j);
+						State _state = new State(state.getName()+"."+t.getInput(), "normal", true, state);
+						Transition _transition = new Transition("0", t.getOutput(), t.getName(), t.getDestination(), _state, false, 0);
+						_state.setTransition(_transition);
+						t.setDestination(_state);
+						_stateList.add(_state);
 					}
 				}
 			}
@@ -153,19 +155,16 @@ public class Main {
 		for(int i = 0; i < _stateList.size(); i++) {
 			graph.setStateMap(_stateList.get(i).getName(), _stateList.get(i));
 		}
-		
+		//System.out.println("\n");
 		return graph;
 	}
 	
 	private Graph posProcess(Graph graph) {
 		Iterator<State> stateList = graph.getIteratorStateValue();
-		//List<State> _stateList = new LinkedList<State>();
 		
 		while(stateList.hasNext()) {
 			State state = stateList.next();
 			if(state.getPre_process()) {
-				//_stateList.add(state);
-				
 				State source = state.getPre_processStateSource();
 				State destin = state.getTransitions().get(0).getDestination();
 				
@@ -194,12 +193,15 @@ public class Main {
 				dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 				dualGraphConverted.inicialState();
 				
-				if(i == 1 || i == 2 || i == 4 || i == 5){
+				if(i == 1 || i == 2 || i == 5 || i == 6){
 					//Step 03: Create test case with dual graph in Depth or Breadth-First Search
+					graph.inicialState();
+					dualGraphConverted.inicialState();
+					
 					firstSearchTestCase(path, typeFile, reader, i, "Alltrans", graph.clone());
 					firstSearchTestCase(path, typeFile, reader, i, "Alltranspair", dualGraphConverted.clone());
 				}
-				else if(i == 3 || i == 6){ //Eulerian Cycle
+				else if(i == 3 || i == 7){ //Eulerian Cycle
 					//Step 04: Balancing graph with Floyd-Warshal and generate test cases with Hierholzer
 					//if is true, so is a normal graph; else is a dual graph
 					graph.inicialState();
@@ -208,18 +210,14 @@ public class Main {
 					eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltrans", balancing.inicio(graph.clone()), true);
 					eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
 				}
-				else{ //Chinese Postman Problem
+				else if(i == 4 || i == 8){ //Chinese Postman Problem
 					//Step 06: Balancing graph with Chinese Postman Problem (CPP) and generate test cases with Hierholzer
 					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
-					
-					System.out.println(graph.showResult());
-					System.out.println(dualGraphConverted.showResult());
-					
 					graph.inicialState();
 					dualGraphConverted.inicialState();
 					
 					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
-					//eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
 				}
 			}
 		}
@@ -239,7 +237,7 @@ public class Main {
 		File DIR = new File("./src/SwitchCover/");
 		String typeFile = "";
 		
-		if(i >= 1 && i <= 3) typeFile = "xml";
+		if(i >= 1 && i <= 4) typeFile = "xml";
 		else typeFile = "file";
 			
 		for (File pathXMLFile : DIR.listFiles()) { //[XML, TXT]...
@@ -249,7 +247,7 @@ public class Main {
 					if(!pathMEF.getName().equals(".DS_Store")){
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								if(pathNumber.getName().equals("109")) {
+								//if(pathNumber.getName().equals("3")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -263,15 +261,15 @@ public class Main {
 										   !file.getName().contains("timePcc")){
 											String path = "";
 											
-											//if(typeFile.equals("xml")) path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
-											//else path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
+											if(typeFile.equals("xml")) path = "./src/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
+											else path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											
-											path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
+											//path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											Main main = new Main();
 											main.createGraphTestCase(path, file.getName(), typeFile, i);
 										}
 									}
-								}
+								//}
 								}
 							}
 						}
@@ -283,13 +281,14 @@ public class Main {
 	
 	private int inicialize() {
 		while (true) {
-			System.out.println(
+			System.out.print(
 					"\nHi and welcome the H-Switch Cover program. For more informations, please take a look the README.txt file in source of project."
 							+ "\nWould do you like to generate test cases with: \n"
-							+ "\n1- [XML] Breadth First Search | 4- [TXT] Breadth First Search"
-							+ "\n2- [XML] Depth First Search   | 5- [TXT] Depth First Search"
-							+ "\n3- [XML] Eulerian Cycle       | 6- [TXT] Eulerian Cycle"
-							+ "\n7- Chinese Postman Problem    | 8- Exit");
+							+ "\n1- [XML] Breadth First Search    | 5- [TXT] Breadth First Search"
+							+ "\n2- [XML] Depth First Search      | 6- [TXT] Depth First Search"
+							+ "\n3- [XML] Eulerian Cycle          | 7- [TXT] Eulerian Cycle"
+							+ "\n4- [XML] Chinese Postman Problem | 8- [TXT] Chinese Postman Problem"
+							+ "\n0- [Exit] ");
 
 			try {
 				Scanner input = new Scanner(System.in);
@@ -302,12 +301,12 @@ public class Main {
 					input.close();
 				}
 
-				if (r < 1 || r > 8) System.out.println("\n\n[Only number between 1 and 8!]");
-				else if (r == 8) System.exit(0);
+				if (r < 0 || r > 8) System.out.println("\n\n[Only number between 0 and 8!]");
+				else if (r == 0) System.exit(0);
 				else return r;
 			}
 			catch (Exception e) {
-				System.out.println("\n\n[Only number between 1 and 8!]");
+				System.out.println("\n\n[Only number between 0 and 8!]");
 			}
 		}
 	}
