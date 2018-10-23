@@ -41,11 +41,11 @@ public class GenerateTestCase {
 	private List<State> stateList = new ArrayList<State>();
 	private List<String> listTestCase = new ArrayList<String>();
 	private List<Cycle> cycleList = new ArrayList<Cycle>();
-	private List<List<State>> cycleFinale = new ArrayList<List<State>>();
+	private List<List<State>> finalCycle = new ArrayList<List<State>>();
 	
 	private State stateInitial = new State();
 	private boolean caseFound = false;
-	private String testCase = new String();
+	private String testCase;
 	
 	public GenerateTestCase(Graph graph){
 		this.graph = graph;
@@ -54,8 +54,9 @@ public class GenerateTestCase {
 	private List<State> returnInicialStates(Graph graph){
 		Iterator<State> statesIterator = graph.getIteratorStateValue();
 		while(statesIterator.hasNext()){
-			State state = (State)statesIterator.next();	
-			if(state.getTypeState().equals("inicial")){
+			State state = statesIterator.next();	
+			
+			if(state.getTypeState().equals("inicial")) {
 				stateInitialList.add(state);
 			}
 		}
@@ -65,7 +66,7 @@ public class GenerateTestCase {
 	private void setFalseTransitionsStates(){
 		Iterator<State> statesIterator = graph.getIteratorStateValue();
 		while(statesIterator.hasNext()){
-			State state = (State)statesIterator.next();
+			State state = statesIterator.next();
 			state.setVisited(false);
 			Iterator<Transition> transitionsIterator = state.getTransitionIterator();
 			
@@ -76,12 +77,12 @@ public class GenerateTestCase {
 		}
 	}
 
-	private Boolean checkStateNotVisited(){
+	private boolean checkStateNotVisited(){
 		//Iterator<State> stateIterator = graph.getIteratorStateValue();
-		
-		/**CHECAR SE PRECISA TIRAR**/
+
 		//while(stateIterator.hasNext()){
-			//if(stateIterator.next().getVisited() == false){
+			//State state = stateIterator.next();
+			//if(state.getVisited() == false){
 				Iterator<State> stateIt = graph.getIteratorStateValue();
 				
 				while(stateIt.hasNext()){
@@ -90,8 +91,9 @@ public class GenerateTestCase {
 					if(stateTrans.getVisited() == true){
 						Iterator<Transition> transitionIterator = stateTrans.getTransitionIterator();
 						
-						while(transitionIterator.hasNext()){							
-							if(transitionIterator.next().getVisited() == false){
+						while(transitionIterator.hasNext()){		
+							Transition transition = transitionIterator.next();
+							if(transition.getVisited() == false){
 								stateInitial = stateTrans;
 								return true;
 							}
@@ -105,13 +107,14 @@ public class GenerateTestCase {
 	
 	private List<Cycle> course(State state){
 		Iterator<Transition> transitionsIterator = state.getTransitionIterator();
-		while(transitionsIterator.hasNext() && caseFound == false){//ENTRA
-			Transition transition = (Transition)transitionsIterator.next();
-			if(transition.getVisited() == false){//ENTRA E NAO ENTRA
+		while(transitionsIterator.hasNext() && caseFound == false){
+			Transition transition = transitionsIterator.next();
+			
+			if(transition.getVisited() == false){
 				State stateDestination = transition.getDestination();
 				stateDestination.setPonderosity(stateDestination.getPonderosity()+1);
+				
 				if(!stateDestination.equals(stateInitial)){
-					/**CONFIRMAR RETIRADA - PELO VISTO, ACRESCENTA MAIS UM!*/
 					if (!stateDestination.equals(state)){
 						stateList.add(stateDestination);
 						transition.setVisited(true);
@@ -124,7 +127,9 @@ public class GenerateTestCase {
 					transition.setVisited(true);
 					listTestCase.add(testCase);
 					Cycle cycle = new Cycle();
-					cycle.setStateOrigin(stateInitial);
+					State keyState = new State();
+					keyState = stateInitial;
+					cycle.setStateOrigin(keyState);
 					cycle.setCycle(testCase);
 					cycle.setStateList(stateList);
 					cycleList.add(cycle);
@@ -148,23 +153,18 @@ public class GenerateTestCase {
 		Iterator<State> statesIterator = returnInicialStates(graph).iterator();
 		
 		while(statesIterator.hasNext()){
-			stateInitial = (State)statesIterator.next();
+			stateInitial = statesIterator.next();
 			setFalseTransitionsStates();
+			
 			stateInitial.setVisited(true);
 			stateInitial.setInitialSequence(true);
+			stateList = new ArrayList<State>();
 			stateList.add(stateInitial);
-
+			caseFound = false;
+			
 			EulerCycle makeCycle = new EulerCycle(course(stateInitial));
-			//int cont = 0;
-			List<State> eulerCycle = makeCycle.createEulerCycle();
-			Iterator<State> it = eulerCycle.iterator();
-			
-			while(it.hasNext()) {
-				it.next().getName();
-			}
-			
-			cycleFinale.add(eulerCycle);
+			finalCycle.add(makeCycle.createEulerCycle());
 		}
-		return cycleFinale;
+		return finalCycle;
 	}
 }

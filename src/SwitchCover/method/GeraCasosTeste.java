@@ -16,72 +16,54 @@ public class GeraCasosTeste {
 	}
 	
 	public List inicio(){
-		
 		List listaRetornoCiclo = new ArrayList();
-		
 		/** Retorna os estados iniciais e come�ar a percorrer**/
 		Iterator estadosIterator = retornaEstadosInciais(maquina).iterator();
 		
 		while(estadosIterator.hasNext()){///voltar essa linha
-			
 			estadoInicial = (State)estadosIterator.next();///voltar essa linha
-
 			 /** aqui dever� setar todas as transi��es e estados como n�o visitadas **/
 			setFalseTransicoesEstados();
 			
 			estadoInicial.setVisited(true);
-			
 			estadoInicial.setComecouSeq(true);
-			
+
 			 /** ### inicio add **/
 			 listaEstados = new ArrayList();
 			 listaEstados.add(estadoInicial);
 			 /** ### fim add **/
-			 
 			 listaCiclos = new ArrayList();
-			 	 
 			 listaRetornoCiclo = percorrer(estadoInicial);
 			 
 			 /**
 			  * APAGAR!!! APENAS EXIBE OS CICLOS CRIADOS
 			  */
-			 //System.out.println(" \n\n\n ------>>>>> Cycle para o estado inicial: " + estadoInicial.getName());
-				Iterator itc = listaRetornoCiclo.iterator();
-		         while (itc.hasNext()){
-		        	Cycle ciclo = (Cycle)itc.next();
-		        	 //System.out.println("\n");
-		        	 String cicloMontado = new String();
-		        	 
-		        	 Iterator itce = ciclo.getStateList().iterator();
-			         while (itce.hasNext()){
-			        	State estado = (State)itce.next();
-			        	cicloMontado = cicloMontado + estado.getName() + ", ";
-			         }
-			         
-			         //System.out.println(cicloMontado);
-		        	
-		         }
-
-		         casoEncontrado = false;
-			 /**
+			 Iterator itc = listaRetornoCiclo.iterator();
+		     while (itc.hasNext()){
+		        Cycle ciclo = (Cycle)itc.next();
+		        String cicloMontado = new String();
+		        Iterator itce = ciclo.getStateList().iterator();
+			    while (itce.hasNext()){
+			    	State estado = (State)itce.next();
+			        cicloMontado = cicloMontado + estado.getName() + ", ";
+			    }
+		     }
+		     /**
 			  * APAGAR Acima!!! APENAS EXIBE OS CICLOS CRIADOS
 			  */
-			 //System.out.println();
+		     
+		     casoEncontrado = false;
+			 
 			 
 			 MontarCicloEuleriano montaCiclo = new MontarCicloEuleriano(listaRetornoCiclo);
 			 int cont=0;
 			 Iterator it = montaCiclo.montaCominhoEuleriano().iterator();
-	         while (it.hasNext()){
-	        	State estado = (State)it.next();
-	        	
-	        	//System.out.println(cont++ + " - " + estado.getName());
-	        	
-	         	}
 	         
+			 while (it.hasNext()){
+	        	State estado = (State)it.next();
+	         }
 			 cicloFinal.add(montaCiclo.montaCominhoEuleriano());
-
 		}
-		
 		return cicloFinal;
 	}
 	
@@ -131,7 +113,7 @@ public class GeraCasosTeste {
 			//System.out.println("Atual -> " + pEstadoAtual.getNome());
 		
 			Iterator transicoesIterator = pEstadoAtual.getTransitionIterator();
-				while (transicoesIterator.hasNext() && casoEncontrado==false){
+			while (transicoesIterator.hasNext() && casoEncontrado==false){
                 Transition transicao = (Transition)transicoesIterator.next();	
                 
                  if (transicao.getVisited() == false){
@@ -196,7 +178,7 @@ public class GeraCasosTeste {
                     		  *  Essa � um sugest�o para poder otimizar, mas poderia verificar as transi��es
                     		  *  em vez dos estados. 
                     		  **/
-                        	 Boolean verifica = verificarEstadosNaoVisitados();               	 
+                        	 Boolean verifica = verificarEstadosNaoVisitados();   ////-----            	 
                     		 
                     		 /** Se existir, chamar m�todo que vai percorrer o ciclo montado, ignorando o estado chave
                     		  * e por cada estado que passar perguntar, tem transi��o de sa�da, se sim, retornar esse estado 

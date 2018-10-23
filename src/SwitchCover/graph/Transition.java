@@ -17,7 +17,7 @@ public class Transition {
     	this.counter = 0;
     }
     
-    public Transition(String input, String output, String name, State destination, State source, Boolean visited, Integer counter){
+    public Transition(String input, String output, String name, State destination, State source, boolean visited, Integer counter){
     	this.input = input;
     	this.output = output;
     	this.name = name;
