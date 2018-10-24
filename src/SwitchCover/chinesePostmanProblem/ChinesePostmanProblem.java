@@ -1,6 +1,7 @@
 package SwitchCover.chinesePostmanProblem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,7 +97,7 @@ public class ChinesePostmanProblem {
 		Iterator<State> row = graph.getIteratorStateValue();
 		while(row.hasNext()){
 			State s = row.next();
-			//System.out.print(s.getName()+" | ");
+			//System.out.print(" "+s.getName()+"|");
 			for(Transition t : s.getTransitions()){
 				int r = s.getIdCPP();
 				int c = t.getDestination().getIdCPP();
@@ -202,8 +203,41 @@ public class ChinesePostmanProblem {
 		return null;
 	}
 	
-	private List<Transition> newPathToGraph(int source, int destination, int pathLength, Graph graph) {
-		//System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
+	private List<Transition> breadthFirstSearchByPath(int pathLength, State source, Transition transition, State destination) {
+		List<Transition> path = new LinkedList<Transition>();
+		
+		if(pathLength == 0) {
+			if(source.getName().equals(destination.getName())) path.add(transition);
+			return path;
+		}
+		else {
+			//if(transition == null || (!transition.getVisited())) {
+				//if(transition != null) source.setVisited(true);
+				
+				for(Transition t: source.getTransitions()) {
+					path = breadthFirstSearchByPath(pathLength-1, t.getDestination(), t, destination);
+					if(path.size() == pathLength) {
+						if(transition != null) path.add(transition);
+						break;
+					}
+				}
+			}
+			return path;
+		}
+	//}
+	
+	private List<Transition> newPathToGraph(int sourceID, int destinationID, int pathLength, Graph graph) {
+		//System.out.println("\nSource: "+ sourceID +", Destination: "+ destinationID+ ", Path length: "+ pathLength);
+		State source = targetState(graph, sourceID);
+		State destination = targetState(graph, destinationID);
+		
+		List<Transition> path = breadthFirstSearchByPath(pathLength, source, null, destination);
+		Collections.reverse(path);
+		System.out.println(path);
+		return path;
+	}
+	/*private List<Transition> newPathToGraph(int source, int destination, int pathLength, Graph graph) {
+		System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
 		List<List<String>> searchSequence = new LinkedList<List<String>>();
 		List<Transition> newPath = new LinkedList<Transition>();
 		FirstSearch search = new FirstSearch();
@@ -229,7 +263,7 @@ public class ChinesePostmanProblem {
 		}
 		
 		return newPath;
-	}
+	}*/
 	
 	private void addPathToGraph(List<List<Transition>> newPath, Graph graph) {
 		for(int i = 0; i < newPath.size(); i++) {
@@ -261,15 +295,16 @@ public class ChinesePostmanProblem {
 		
 		if(!checkIfIsBalanced(desbalancedMatrix)) {
 			//Step 3: Hungarian method - find the maximal matching between the desbalanced nodes to find a path between then
-			
 			//double[][] HMmatrix = HMmatrix(matrixFW, desbalancedMatrix);
 			//show(HMmatrix);
 			List<Object> list = convertToDouble(matrixFW, desbalancedMatrix);
 			//show((double[][]) list.get(0));
+			//System.out.println();
+			
 			HungarianAlgorithm ha = new HungarianAlgorithm((double[][]) list.get(0));
 			int[] HMresult = ha.execute();
 				
-			/*System.out.print("\n\nMaximal Matching: ");
+			/*System.out.print("Maximal Matching: ");
 			for(int w = 0; w < HMresult.length; w++) {
 				System.out.print(HMresult[w] +", ");
 			}
@@ -279,15 +314,13 @@ public class ChinesePostmanProblem {
 			List<LinkedList<LinkedList<Integer>>> originalIDMatrix = (List<LinkedList<LinkedList<Integer>>>) list.get(1);
 			double[][] subDesbalancedMatrix = (double[][]) list.get(0);
 			List<List<Transition>> newPath = new LinkedList<>();
-			
+
 			for(int id = 0; id < HMresult.length; id++) {
 				int source = originalIDMatrix.get(id).get(HMresult[id]).get(0);
 				int destination = originalIDMatrix.get(id).get(HMresult[id]).get(1);
 				int pathLength = (int) subDesbalancedMatrix[id][HMresult[id]];
-				newPath.add(newPathToGraph(source, destination, pathLength, graph));
-				//System.out.println();
-			}
-				
+				newPath.add(newPathToGraph(source, destination, pathLength, graph.clone()));
+			}	
 			addPathToGraph(newPath, graph);
 		}
 		

@@ -109,6 +109,7 @@ public class Main {
 	}
 	
 	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
+		System.out.println(graphBalanced.showResult());
 		GenerateTestCase testCaseBreadthFirstSearch = new GenerateTestCase(graphBalanced);
 		List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
 		//GeraCasosTeste testCaseBreadthFirstSearch = new GeraCasosTeste(graphBalanced);
@@ -121,7 +122,6 @@ public class Main {
 				String testList = "";
 				for(State state: listState) {
 					if(typeGraph){
-						System.out.println(testList);
 						testList = testList + (state.getName());
 					}
 					else{
@@ -191,7 +191,7 @@ public class Main {
 		return graph;
 	}
 	
-	private void countState(Graph graph) {
+	private void count(Graph graph) {
 		int count = 0;
 		Iterator<State> list = graph.getIteratorStateValue();
 		while(list.hasNext()) {
@@ -225,8 +225,6 @@ public class Main {
 				else if(i == 3 || i == 7){ //Eulerian Cycle
 					//Step 04: Balancing graph with a H-Switch Cover heuristic and generate test cases with Hierholzer
 					//if is true, so is a normal graph; else is a dual graph
-					countState(balancing.inicio(graph.clone()));
-					countState(balancing.inicio(dualGraphConverted.clone()));
 					graph.inicialState();
 					dualGraphConverted.inicialState();
 					
@@ -236,14 +234,12 @@ public class Main {
 				else if(i == 4 || i == 8){ //Chinese Postman Problem
 					//Step 06: Balancing graph with Chinese Postman Problem (CPP) and generate test cases with Hierholzer
 					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
-					countState(posProcess(cpp.testCasePCC(preProcess(graph.clone()))));
-					countState(cpp.testCasePCC(dualGraphConverted.clone()));
 					
 					graph.inicialState();
-					dualGraphConverted.inicialState();
-					
 					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
-					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+					
+					//dualGraphConverted.inicialState();
+					//eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
 				}
 			}
 		}

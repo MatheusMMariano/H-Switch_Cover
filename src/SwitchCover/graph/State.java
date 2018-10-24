@@ -59,7 +59,7 @@ public class State {
 		this.pre_processStateSource = null;
 	}
 	
-	public State(String name, String typeState, Boolean pre_process, State pre_processStateSource){
+	public State(String name, String typeState, boolean pre_process, State pre_processStateSource){
 		this.name = name;
 		this.typeState = typeState;
 		this.balancedStatus = false;

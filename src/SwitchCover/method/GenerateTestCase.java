@@ -35,7 +35,7 @@ import SwitchCover.graph.Transition;
 
 public class GenerateTestCase {
 	
-	private Graph graph = new Graph();
+	private Graph graph;
 	
 	private List<State> stateInitialList = new ArrayList<State>();
 	private List<State> stateList = new ArrayList<State>();
@@ -86,7 +86,7 @@ public class GenerateTestCase {
 				Iterator<State> stateIt = graph.getIteratorStateValue();
 				
 				while(stateIt.hasNext()){
-					State stateTrans = (State)stateIt.next();
+					State stateTrans = stateIt.next();
 				
 					if(stateTrans.getVisited() == true){
 						Iterator<Transition> transitionIterator = stateTrans.getTransitionIterator();
@@ -106,9 +106,12 @@ public class GenerateTestCase {
 	}
 	
 	private List<Cycle> course(State state){
+		System.out.println("\n>>"+state.getName()+": peso = "+state.getPonderosity());
 		Iterator<Transition> transitionsIterator = state.getTransitionIterator();
+		
 		while(transitionsIterator.hasNext() && caseFound == false){
 			Transition transition = transitionsIterator.next();
+			System.out.println("  |->"+transition.getDestination().getName()+"["+transition.getName()+"]"+", "+transition.getVisited());
 			
 			if(transition.getVisited() == false){
 				State stateDestination = transition.getDestination();
@@ -116,6 +119,7 @@ public class GenerateTestCase {
 				
 				if(!stateDestination.equals(stateInitial)){
 					if (!stateDestination.equals(state)){
+						System.out.println("     É DIFERENTE!");
 						stateList.add(stateDestination);
 						transition.setVisited(true);
 						stateDestination.setVisited(true);
@@ -124,8 +128,11 @@ public class GenerateTestCase {
 					}
 				}
 				else{
+					System.out.println("     É IGUAL!");
 					transition.setVisited(true);
+					System.out.println("     "+testCase);
 					listTestCase.add(testCase);
+					
 					Cycle cycle = new Cycle();
 					State keyState = new State();
 					keyState = stateInitial;
@@ -150,10 +157,12 @@ public class GenerateTestCase {
 	}
 	
 	public List<List<State>> initial(){
+		System.out.println("\n");
 		Iterator<State> statesIterator = returnInicialStates(graph).iterator();
 		
 		while(statesIterator.hasNext()){
 			stateInitial = statesIterator.next();
+			System.out.println(stateInitial.getName());
 			setFalseTransitionsStates();
 			
 			stateInitial.setVisited(true);
@@ -166,5 +175,11 @@ public class GenerateTestCase {
 			finalCycle.add(makeCycle.createEulerCycle());
 		}
 		return finalCycle;
+	}
+	
+	public List<List<State>> newInitial(){
+		
+		
+		
 	}
 }
