@@ -2,6 +2,8 @@ package SwitchCover.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -201,7 +203,7 @@ public class Main {
 		System.out.println(count);
 	}
 	
-	private void createGraphTestCase(String path, String fileName, String typeFile, int i) throws ParserConfigurationException, SAXException, IOException{
+	private void createGraphTestCase(String path, String fileName, String typeFile, int i, int criterion) throws ParserConfigurationException, SAXException, IOException{
 		try{
 			//Step 01: Create graph by 1) XML or 2) a TXT file
 			Reader reader = new Reader();
@@ -209,42 +211,56 @@ public class Main {
 			if(typeFile.equals("xml")) graph = graph.openXML(path);
 			else graph = reader.generateTXTGraph(path);
 			
+			graph.showResult();
+			
 			if(graph.isConexo()) {
 				if(graph.getIteratorState().hasNext()){
-					//Step 02: Create new graph with new transitions (dual graph / transition-pair graph)
-					dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
-					dualGraphConverted.inicialState();
-					
 					if(i == 1 || i == 2 || i == 5 || i == 6){
-						//Step 03: Create test case with dual graph in Depth or Breadth-First Search
-						graph.inicialState();
-						dualGraphConverted.inicialState();
-						
-						firstSearchTestCase(path, typeFile, reader, i, "Alltrans", graph.clone());
-						firstSearchTestCase(path, typeFile, reader, i, "Alltranspair", dualGraphConverted.clone());
+						//Step 02.A: Create test case with dual graph in Depth or Breadth-First Search
+						if(criterion == 0) {
+							graph.inicialState();
+							firstSearchTestCase(path, typeFile, reader, i, "Alltrans", graph.clone());
+						}
+						else{
+							//Step 02.B: Create new graph with new transitions (dual graph / transition-pair graph)
+							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
+							dualGraphConverted.inicialState();
+							firstSearchTestCase(path, typeFile, reader, i, "Alltranspair", dualGraphConverted.clone());
+						}
 					}
 					else if(i == 3 || i == 7){ //Eulerian Cycle
 						//Step 04: Balancing graph with a H-Switch Cover heuristic and generate test cases with Hierholzer
 						//if is true, so is a normal graph; else is a dual graph
-						graph.inicialState();
-						dualGraphConverted.inicialState();
-						
-						eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltrans", balancing.inicio(graph.clone()), true);
-						eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
+						if(criterion == 0) {
+							graph.inicialState();
+							eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltrans", balancing.inicio(graph.clone()), true);
+						}
+						else{
+							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
+							dualGraphConverted.inicialState();
+							eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
+						}
 					}
 					else if(i == 4 || i == 8){ //Chinese Postman Problem
 						//Step 06: Balancing graph with Chinese Postman Problem (CPP) and generate test cases with Hierholzer
 						ChinesePostmanProblem cpp = new ChinesePostmanProblem();
 						
-						graph.inicialState();
-						eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
-						
-						dualGraphConverted.inicialState();
-						eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+						if(criterion == 0) {
+							graph.inicialState();
+							eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
+						}
+						else {
+							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
+							dualGraphConverted.inicialState();
+							eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+						}
 					}
 				}
 			}
-			else System.out.println("This graph isn't conexo!");
+			else {
+				
+				System.out.println("This graph isn't conexo! -> "+path);
+			}
 		}
 		catch(NullPointerException np){
 			System.out.println("ERROR! File is empty.\n"+np);
@@ -258,22 +274,22 @@ public class Main {
 		
 	}
 
-	private void source(int i) throws ParserConfigurationException, SAXException, IOException {
+	private void source(int i, int criterion, String typeFileName) throws ParserConfigurationException, SAXException, IOException {
 		File DIR = new File("./src/SwitchCover/");
 		String typeFile = "";
 		
 		if(i >= 1 && i <= 4) typeFile = "xml";
 		else typeFile = "file";
-			
+		
 		for (File pathXMLFile : DIR.listFiles()) { //[XML, TXT]...
 			if (pathXMLFile.getName().equals(typeFile)) { // XML or TXT
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						//if(pathMEF.getName().equals("4-4-4")) {
+						if(pathMEF.getName().equals("8-4-4")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								//if(pathNumber.getName().equals("80")) {
+								if(pathNumber.getName().equals("101")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -284,27 +300,34 @@ public class Main {
 										   !file.getName().contains("timeDepth") && 
 										   !file.getName().contains("timeBreadth") && 
 										   !file.getName().contains("timeEuler") &&
-										   !file.getName().contains("timePcc")){
+										   !file.getName().contains("timeCPP")){
 											String path = "";
 											
 											if(typeFile.equals("xml")) path = "./src/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											else path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											
-											System.out.println("/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName());
+											//System.out.println();
 											Main main = new Main();
-											long start = System.currentTimeMillis();
-											main.createGraphTestCase(path, file.getName(), typeFile, i);
-											long stop = System.currentTimeMillis();
-											System.out.println("-> TIME (EM SEGUNDOS): "+((stop - start)/1000)%60);
+											
+											Instant start = Instant.now();
+											main.createGraphTestCase(path, file.getName(), typeFile, i, criterion);
+											Instant stop = Instant.now();
+											
+											Duration duration = Duration.between(start, stop);
+											long duracaoEmMilissegundos = duration.toMillis();
+											System.out.println(path+" TIME (miliseconds): "+ duracaoEmMilissegundos);
+											
+											Reader read = new Reader();
+											read.insertFile("time"+typeFileName, duracaoEmMilissegundos);
 										}
 									}
-								//}
+								}
 								}
 							}
 						}
 					}
 				}				
-			//}
+			}
 			}
 		}
 	}
@@ -343,7 +366,26 @@ public class Main {
 
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
 		Main main = new Main();
-		main.source(main.inicialize());
+		//main.source(main.inicialize());
+		main.source(main.inicialize(), 0, "test"); // 0: all transitions, 1: all transitions-pairs
+		
+		/*for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
+			String criterion = "";
+			
+			if(x == 0) criterion = "Alltrans";
+			else criterion = "Alltranspair";
+			
+			for(int i = 1; i <= 8; i++) {
+				String typeFileName = "";
+				
+				if(i == 1 || i == 5) typeFileName = "Breadth"+criterion;
+				else if(i == 2 || i == 6) typeFileName = "Depth"+criterion;
+				else if(i == 3 || i == 7) typeFileName = "Eulerian"+criterion;
+				else if(i == 4 || i == 8) typeFileName = "CPP"+criterion;
+					
+				main.source(i, x, typeFileName);
+			}
+		}*/
 	}
 
 }

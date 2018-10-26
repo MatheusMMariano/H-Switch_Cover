@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import SwitchCover.graph.Graph;
@@ -60,108 +59,6 @@ public class Reader {
 		}
 	}
 	
-	/*public Graph openTXT(String TXTdir){
-		Graph graph = new Graph();
-		boolean check = true;
-		boolean input = false;
-		boolean output = false;
-		
-		//br = convert char to string<-convert bytes to char<-catch in bytes the txt file
-		this.br = new BufferedReader(new InputStreamReader(Reader.class.getResourceAsStream(TXTdir)));
-
-		for(String line: readDataFile()){
-			System.out.println(line);
-			//check if line is empty
-			if(!line.isEmpty()){
-				//catch the state in a iterator
-				Iterator<State> iterator = graph.getIteratorStateValue();
-				//if have a state, check if the source and destination states exist in iterator/graph
-				//if it exist, insert the variables 'input' and 'output' as true
-				while(iterator.hasNext()){
-					State state = iterator.next();
-					//if(state.getName().equals(line.substring(0, line.indexOf("-")-1))) input = true;
-					//if(state.getName().equals(line.substring(line.indexOf("-> ")+3, line.length()))) output = true;
-					if(state.getName().equals(line.substring(0, 1))) input = true;
-					if(state.getName().equals(line.substring(line.length()-1, line.length()))) output = true;
-				}
-				
-				//check if state is the first one; if yes, so it is a initial state
-				//this condition is check only once
-				if(check){
-					//maybe I defines the map of initial state like 'initial' instead of state name in future releases
-					//graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "inicial"));
-					
-					//graph.setStateMap(line.substring(0, 1), new State(line.substring(0, 1), "inicial"));
-					String initialState = line.substring(0, line.lastIndexOf(" --"));
-					graph.setStateMap(initialState, new State(initialState, "inicial"));
-					check = false;
-				}
-				//check if the state exist in graph; if exist, don't input it in graph
-				else if(!input) {
-					//graph.setStateMap(line.substring(0, line.indexOf("-")-1), new State(line.substring(0, line.indexOf("-")-1), "normal"));
-
-					//graph.setStateMap(line.substring(0, 1), new State(line.substring(0, 1), "normal"));
-					String newState = line.substring(0, line.lastIndexOf(" --"));
-					graph.setStateMap(newState, new State(newState, "normal"));
-				}
-				if(!output && !line.substring(line.indexOf("-> ")+3, line.length()).equals(line.substring(0, line.indexOf("-")-1))){
-					//graph.setStateMap(line.substring(line.indexOf("-> ")+3, line.length()), new State(line.substring(line.indexOf("-> ")+3, line.length()), "normal"));
-					
-					//graph.setStateMap(line.substring(line.length()-1, line.length()), new State(line.substring(line.length()-1, line.length()), "normal"));
-					String newState = line.substring(line.indexOf(">")+2);
-					graph.setStateMap(newState, new State(newState, "normal"));
-				}
-				//input the transition in inicial state
-
-//				Transition t = new Transition();
-//				t.setName(line.substring(line.indexOf("-- ")+3, line.indexOf("-> ")-1));
-//				t.setSource(graph.getState(line.substring(0, line.indexOf("-")-1)));
-//				t.setDestination(graph.getState(line.substring(line.indexOf("-> ")+3, line.length())));
-//
-//				t.setInput(line.substring(line.indexOf("-- ")+3, line.indexOf("-- ")+4));
-//				//t.setInput(line.substring(0, line.indexOf("-")-1)+">"+line.substring(line.indexOf("-- ")+3, line.indexOf("-- ")+4));
-//				
-//				t.setOutput(line.substring(line.indexOf("/ ")+2, line.indexOf("/ ")+3));
-//				//t.setOutput(line.substring(line.indexOf("-> ")+3, line.length()));
-//				
-//				t.setVisited(false);
-//				graph.getState(line.substring(0, line.indexOf("-")-1)).setTransition(t);
-
-
-//				//A LINHA DE BAIXO ESTAVA ANTES. FUNCIONAVA MAS ESTAVA ERRADO!
-//				//PARA ESTADOS/NOME DA TRANSICAO COM MAIS DE 1 CARACTER ELE NAO PEGA O NOME
-//				Transition t = new Transition();
-//				t.setName(line.substring(5, 10));
-//				t.setSource(graph.getState(line.substring(0, 1)));
-//				t.setDestination(graph.getState(line.substring(line.length()-1, line.length())));
-//				t.setInput(line.substring(0, 1)+">"+line.substring(5, 6));
-//				t.setOutput(line.substring(9, 10));
-//				t.setVisited(false);
-//				graph.getState(line.substring(0, 1)).setTransition(t);
-				
-				Transition t = new Transition();
-				t.setName(line.substring(line.lastIndexOf("-- ")+3, line.lastIndexOf(" ->")));
-				//System.out.println("Name: "+ line.substring(line.lastIndexOf("-- ")+3, line.lastIndexOf(" ->")));
-				t.setSource(graph.getState(line.substring(0, line.lastIndexOf(" --"))));
-				//System.out.println("Source: "+graph.getState(line.substring(0, line.lastIndexOf(" --"))).getName());
-				t.setDestination(graph.getState(line.substring(line.indexOf(">")+2)));
-				//System.out.println("->>>>"+line.substring(line.indexOf(">")+2)+"h"+line.substring(line.length()-1, line.length()));
-				//System.out.println("Destination: "+graph.getState(line.substring(line.indexOf(">")+2)).getName());
-				t.setInput(line.substring(0, line.lastIndexOf(" --"))+">"+line.substring(line.lastIndexOf("-- ")+3, line.lastIndexOf(" /")));
-				//System.out.println("Input: "+line.substring(0, line.lastIndexOf(" --"))+">"+line.substring(line.lastIndexOf("-- ")+3, line.lastIndexOf(" /")));
-				t.setOutput(line.substring(line.lastIndexOf("/ ")+2, line.lastIndexOf(" ->")));
-				//System.out.println("Output: "+line.substring(line.lastIndexOf("/ ")+2, line.lastIndexOf(" ->")));
-				t.setVisited(false);
-				//System.out.println("\n");
-				graph.getState(line.substring(0, line.lastIndexOf(" --"))).setTransition(t);
-			}
-			input = false;
-			output = false;
-		}
-		close();
-		return graph;	
-	}*/
-	
 	public boolean stateIsPresentInGraph(Graph graph, String stateName) {
 		HashMap<String, State> stateHashMap = graph.getStatesMap();
 		if(stateHashMap.get(stateName) == null) return false;
@@ -202,8 +99,10 @@ public class Reader {
 		this.br = new BufferedReader(new InputStreamReader(Reader.class.getResourceAsStream(path)));
 		Graph graph = new Graph();
 		boolean initial = false;
+		System.out.println(path);
 		
 		for(String line: readDataFile()){
+			System.out.println(line);
 			State source = null, destination = null;
 			
 			if(!initial) {
