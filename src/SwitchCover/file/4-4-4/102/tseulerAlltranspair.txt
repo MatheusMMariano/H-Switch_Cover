@@ -1,1 +1,2 @@
-baaaaaabababaabbbaaabaa
+baaaabaaabaabbaaababbaa = 23
+aaabaaababaaabaababbbaa = 23

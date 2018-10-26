@@ -10,16 +10,22 @@ public class EulerCycle {
 	
 	private List<State> path = new ArrayList<State>();
 	private List<Cycle> cycleList = new ArrayList<Cycle>();
-	private boolean equal;
+	private boolean equal = false;
 	
 	public EulerCycle(List<Cycle> cycleList){
 		this.cycleList = cycleList;
-		this.equal = false;
+	}
+	
+	public void show() {
+		for(Cycle cycle: cycleList) {
+			System.out.println(cycle.getStateOrigin().getName()+ " / "+ cycle.getCycle());
+		}
 	}
 	
 	public List<State> course(Cycle cycle){
 		for(State state: cycle.getStateList()){
 			if(!state.equals(cycle.getStateOrigin())){
+				
 				for(Cycle cycleIt: cycleList){
 					if(cycleIt.getStateOrigin().equals(state)){
 						if(cycleIt.getConcatenated() == false){
@@ -36,6 +42,9 @@ public class EulerCycle {
 	}
 	
 	public List<State> createEulerCycle(){
+		
+		show();
+		
 		for(Cycle cycle: cycleList){
 			if(cycle.getConcatenated() == false){
 				cycle.setConcatenated(true);

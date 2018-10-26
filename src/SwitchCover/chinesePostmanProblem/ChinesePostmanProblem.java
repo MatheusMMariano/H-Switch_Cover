@@ -211,20 +211,25 @@ public class ChinesePostmanProblem {
 			return path;
 		}
 		else {
-			//if(transition == null || (!transition.getVisited())) {
-				//if(transition != null) source.setVisited(true);
-				
-				for(Transition t: source.getTransitions()) {
-					path = breadthFirstSearchByPath(pathLength-1, t.getDestination(), t, destination);
-					if(path.size() == pathLength) {
-						if(transition != null) path.add(transition);
-						break;
-					}
+			for(Transition t: source.getTransitions()) {
+				path = breadthFirstSearchByPath(pathLength-1, t.getDestination(), t, destination);
+				if(path.size() == pathLength) {
+					if(transition != null) path.add(transition);
+					break;
 				}
 			}
-			return path;
 		}
-	//}
+		return path;
+	}
+	
+	private List<Transition> newPathBalanced(List<Transition> path){
+		List<Transition> balancedPath = new LinkedList<Transition>();
+		for(Transition t: path) {
+			Transition balancedTransition = new Transition(t.getInput(), t.getOutput(), t.getName(), t.getDestination(), t.getSource(), false, t.getCounter());
+			balancedPath.add(balancedTransition);
+		}
+		return balancedPath;
+	}
 	
 	private List<Transition> newPathToGraph(int sourceID, int destinationID, int pathLength, Graph graph) {
 		//System.out.println("\nSource: "+ sourceID +", Destination: "+ destinationID+ ", Path length: "+ pathLength);
@@ -233,11 +238,13 @@ public class ChinesePostmanProblem {
 		
 		List<Transition> path = breadthFirstSearchByPath(pathLength, source, null, destination);
 		Collections.reverse(path);
-		System.out.println(path);
-		return path;
+		List<Transition> balancedPath = newPathBalanced(path);
+
+		return balancedPath;
 	}
+	
 	/*private List<Transition> newPathToGraph(int source, int destination, int pathLength, Graph graph) {
-		System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
+		//System.out.println("\nSource: "+ source +", Destination: "+ destination+ ", Path length: "+ pathLength);
 		List<List<String>> searchSequence = new LinkedList<List<String>>();
 		List<Transition> newPath = new LinkedList<Transition>();
 		FirstSearch search = new FirstSearch();

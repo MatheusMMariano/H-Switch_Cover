@@ -2,6 +2,7 @@ package SwitchCover.method;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import SwitchCover.graph.Cycle;
@@ -56,9 +57,7 @@ public class GenerateTestCase {
 		while(statesIterator.hasNext()){
 			State state = statesIterator.next();	
 			
-			if(state.getTypeState().equals("inicial")) {
-				stateInitialList.add(state);
-			}
+			if(state.getTypeState().equals("inicial")) stateInitialList.add(state);
 		}
 		return stateInitialList;
 	}
@@ -111,7 +110,7 @@ public class GenerateTestCase {
 		
 		while(transitionsIterator.hasNext() && caseFound == false){
 			Transition transition = transitionsIterator.next();
-			System.out.println("  |->"+transition.getDestination().getName()+"["+transition.getName()+"]"+", "+transition.getVisited());
+			System.out.println("  |->"+transition.getSource().getName()+"->"+transition.getDestination().getName()+"["+transition.getName()+"]"+", "+transition.getVisited());
 			
 			if(transition.getVisited() == false){
 				State stateDestination = transition.getDestination();
@@ -124,6 +123,7 @@ public class GenerateTestCase {
 						transition.setVisited(true);
 						stateDestination.setVisited(true);
 						testCase = testCase + stateDestination.getName() + ", ";
+						System.out.println("     "+testCase);
 						course(stateDestination);
 					}
 				}
@@ -146,7 +146,7 @@ public class GenerateTestCase {
 						stateList.add(stateInitial);
 						testCase = new String();
 						stateInitial.setVisited(true);
-						course(stateInitial);
+						course(stateInitial); //0->0, 
 					}
 					caseFound = true;
 					break;
@@ -177,9 +177,112 @@ public class GenerateTestCase {
 		return finalCycle;
 	}
 	
-	public List<List<State>> newInitial(){
+	private LinkedList<Transition> createCycle(State currentState, State initalState){
+		LinkedList<Transition> cycle = new LinkedList<Transition>();
 		
+		for(Transition transition: currentState.getTransitions()) {
+			if(!transition.getVisited()) {
+				transition.setVisited(true);
+				cycle.add(transition);
+				
+				if(transition.getDestination() == initalState) return cycle;
+				cycle.addAll(createCycle(transition.getDestination(), initalState));
+				break;
+			}
+		}
+		return cycle;
+	}
+	
+	public boolean checkAllTransitionsWasVisited(State state) {
+		List<Transition> list = state.getTransitions();
+		for(Transition t: list) {
+			if(!t.getVisited()) return false;
+		}
+		return true;
+	}
+	
+	private LinkedList<State> generateEulerianCycleSequence(List<LinkedList<Transition>> cycleSet){
+		int i = 0;
+		LinkedList<State> eulerianSequence = new LinkedList<State>();
 		
+		while(!cycleSet.isEmpty()){
+			//System.out.println("\n"+eulerianSequence);
+			List<Transition> cycle = cycleSet.get(i);
+			//System.out.println("|--"+cycle);
+			
+			if(eulerianSequence.isEmpty()) {
+				eulerianSequence.add(cycleSet.get(0).get(0).getSource());
+				//System.out.println("|--"+eulerianSequence);
+				for(Transition t: cycle) eulerianSequence.add(t.getDestination());
+				cycleSet.remove(0);
+			}
+			else {
+				boolean cont = true;
+				for(int x = 0; x < cycle.size(); x++) {
+					//System.out.println(cycle.get(x));
+					
+					for(int id = 1; id < eulerianSequence.size(); id++) {
+						if(cycle.get(x).getSource().equals(eulerianSequence.get(id))) {
+							List<State> statesCycle = new LinkedList<State>();
+							for(Transition t: cycle) statesCycle.add(t.getDestination());
+							eulerianSequence.addAll(id+1, statesCycle);
+							cycleSet.remove(0);
+							i = i - 1;
+							cont = false;
+							break;
+						}
+					}
+					if(!cont) break;
+				}
+				i=i+1;
+			}
+			
+			if(i >= cycleSet.size()) i = 0;
+		}
 		
+		//System.out.println(eulerianSequence);
+		eulerianSequence.removeLast();
+		//System.out.println(eulerianSequence);
+		return eulerianSequence;
+	}
+	
+	private LinkedList<State> generateEulerianCycle(State initialState){
+		List<LinkedList<Transition>> cycleSet = new LinkedList<LinkedList<Transition>>();
+		
+		//First is check if is possible get the eulerian cycle only by initial state
+		while(!checkAllTransitionsWasVisited(initialState)) {
+			cycleSet.add(createCycle(initialState, initialState));
+		}
+		
+		//If have states with transitions not visited yet, so another states of graph are checked
+		Iterator<State> stateIterator = graph.getIteratorStateValue();
+		while(stateIterator.hasNext()) {
+			State state = stateIterator.next();
+			while(!checkAllTransitionsWasVisited(state)) {
+				cycleSet.add(createCycle(state, state));
+			}
+		}
+		
+		//for(List<Transition> cycle: cycleSet) {
+		//	System.out.println(cycle);
+		//}
+		
+		return generateEulerianCycleSequence(cycleSet);
+	}
+	
+	public List<LinkedList<State>> eulerianCycle(){
+		List<LinkedList<State>> eulerianCycleByEachInitialState = new LinkedList<LinkedList<State>>();
+		Iterator<State> initalStateIterator = returnInicialStates(graph.clone()).iterator();
+		//System.out.println(graph.showResult());
+		
+		while(initalStateIterator.hasNext()) {
+			setFalseTransitionsStates();
+			State initialState = initalStateIterator.next();
+			//System.out.println("Initial state: "+initialState.getName());
+			eulerianCycleByEachInitialState.add(generateEulerianCycle(initialState));
+			//System.out.println("\n---------------------------------------\n");
+		}
+		
+		return eulerianCycleByEachInitialState;
 	}
 }

@@ -86,6 +86,17 @@ public class Graph implements Cloneable{
 			state.setVisited(false);
 		}
 	}
+	
+	public void refreshTransition() {
+		Iterator<State> stateList = getIteratorStateValue();
+		while(stateList.hasNext()) {
+			State state = stateList.next();
+			state.setVisited(false);
+			for(Transition t: state.getTransitions()) {
+				t.setVisited(false);
+			}
+		}
+	}
 
 	public HashMap<String, State> getStatesMap() {
 		return statesMap;
@@ -97,5 +108,30 @@ public class Graph implements Cloneable{
 	
 	public int getSize(){
 		return statesMap.keySet().size();
+	}
+	
+	public void checkIfIsConexo(State state) {
+		for(Transition t: state.getTransitions()) {
+			if(!t.getVisited()) {
+				t.setVisited(true);
+				if(t.getDestination() != state) t.getDestination().setVisited(true);
+				checkIfIsConexo(t.getDestination());
+			}
+		}
+	}
+	
+	public boolean isConexo() {
+		Graph checkGraph = this.clone();
+		Iterator<State> states = checkGraph.getIteratorStateValue();
+		
+		while(states.hasNext()) {
+			State state = states.next();
+			checkIfIsConexo(state);
+			if(!state.getVisited()) return false;
+			checkGraph.refreshTransition();
+		}
+		
+		this.refresh();
+		return true;
 	}
 }

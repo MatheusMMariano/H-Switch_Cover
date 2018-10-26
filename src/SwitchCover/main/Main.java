@@ -109,9 +109,9 @@ public class Main {
 	}
 	
 	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
-		System.out.println(graphBalanced.showResult());
 		GenerateTestCase testCaseBreadthFirstSearch = new GenerateTestCase(graphBalanced);
-		List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
+		List<LinkedList<State>> testSequenceBreadth = testCaseBreadthFirstSearch.eulerianCycle();
+		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
 		//GeraCasosTeste testCaseBreadthFirstSearch = new GeraCasosTeste(graphBalanced);
 		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.inicio();
 		
@@ -208,40 +208,43 @@ public class Main {
 			
 			if(typeFile.equals("xml")) graph = graph.openXML(path);
 			else graph = reader.generateTXTGraph(path);
-
-			if(graph.getIteratorState().hasNext()){
-				//Step 02: Create new graph with new transitions (dual graph / transition-pair graph)
-				dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
-				dualGraphConverted.inicialState();
-				
-				if(i == 1 || i == 2 || i == 5 || i == 6){
-					//Step 03: Create test case with dual graph in Depth or Breadth-First Search
-					graph.inicialState();
+			
+			if(graph.isConexo()) {
+				if(graph.getIteratorState().hasNext()){
+					//Step 02: Create new graph with new transitions (dual graph / transition-pair graph)
+					dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 					dualGraphConverted.inicialState();
 					
-					firstSearchTestCase(path, typeFile, reader, i, "Alltrans", graph.clone());
-					firstSearchTestCase(path, typeFile, reader, i, "Alltranspair", dualGraphConverted.clone());
-				}
-				else if(i == 3 || i == 7){ //Eulerian Cycle
-					//Step 04: Balancing graph with a H-Switch Cover heuristic and generate test cases with Hierholzer
-					//if is true, so is a normal graph; else is a dual graph
-					graph.inicialState();
-					dualGraphConverted.inicialState();
-					
-					eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltrans", balancing.inicio(graph.clone()), true);
-					eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
-				}
-				else if(i == 4 || i == 8){ //Chinese Postman Problem
-					//Step 06: Balancing graph with Chinese Postman Problem (CPP) and generate test cases with Hierholzer
-					ChinesePostmanProblem cpp = new ChinesePostmanProblem();
-					
-					graph.inicialState();
-					eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
-					
-					//dualGraphConverted.inicialState();
-					//eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+					if(i == 1 || i == 2 || i == 5 || i == 6){
+						//Step 03: Create test case with dual graph in Depth or Breadth-First Search
+						graph.inicialState();
+						dualGraphConverted.inicialState();
+						
+						firstSearchTestCase(path, typeFile, reader, i, "Alltrans", graph.clone());
+						firstSearchTestCase(path, typeFile, reader, i, "Alltranspair", dualGraphConverted.clone());
+					}
+					else if(i == 3 || i == 7){ //Eulerian Cycle
+						//Step 04: Balancing graph with a H-Switch Cover heuristic and generate test cases with Hierholzer
+						//if is true, so is a normal graph; else is a dual graph
+						graph.inicialState();
+						dualGraphConverted.inicialState();
+						
+						eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltrans", balancing.inicio(graph.clone()), true);
+						eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
+					}
+					else if(i == 4 || i == 8){ //Chinese Postman Problem
+						//Step 06: Balancing graph with Chinese Postman Problem (CPP) and generate test cases with Hierholzer
+						ChinesePostmanProblem cpp = new ChinesePostmanProblem();
+						
+						graph.inicialState();
+						eulerianCycleTestCase(path, typeFile, reader, "tspccAlltrans", posProcess(cpp.testCasePCC(preProcess(graph.clone()))), true);
+						
+						dualGraphConverted.inicialState();
+						eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", cpp.testCasePCC(dualGraphConverted.clone()), false);
+					}
 				}
 			}
+			else System.out.println("This graph isn't conexo!");
 		}
 		catch(NullPointerException np){
 			System.out.println("ERROR! File is empty.\n"+np);
@@ -267,10 +270,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						if(pathMEF.getName().equals("4-4-4")) {
+						//if(pathMEF.getName().equals("4-4-4")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								if(pathNumber.getName().equals("1")) {
+								//if(pathNumber.getName().equals("80")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -289,16 +292,19 @@ public class Main {
 											
 											System.out.println("/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName());
 											Main main = new Main();
+											long start = System.currentTimeMillis();
 											main.createGraphTestCase(path, file.getName(), typeFile, i);
+											long stop = System.currentTimeMillis();
+											System.out.println("-> TIME (EM SEGUNDOS): "+((stop - start)/1000)%60);
 										}
 									}
-								}
+								//}
 								}
 							}
 						}
 					}
 				}				
-			}
+			//}
 			}
 		}
 	}

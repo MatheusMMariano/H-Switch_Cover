@@ -184,4 +184,9 @@ public class State {
 	public void setComecouSeq(boolean comecouSeq) {
 		this.comecouSeq = comecouSeq;
 	}
+	
+	public String toString(){
+		StringBuffer output = new StringBuffer();
+	    return output.append(getName()).toString();
+	}
 }

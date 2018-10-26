@@ -1,8 +1,0 @@
-W>2/c B>1/f W>1/a P>1/b B>1/f
-W>2/c B>2/r P>1/b
-W>2/c B>1/f W>2/c
-W>2/c B>1/f W>1/a P>1/b B>2/r
-W>1/a P>1/b B>1/f W>1/a
-W>1/a P>1/b B>2/r P>1/b
-W>1/a P>1/b B>1/f W>2/c B>1/f
-W>1/a P>1/b B>1/f W>2/c B>2/r
