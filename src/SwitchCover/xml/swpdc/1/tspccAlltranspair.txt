@@ -1,1 +1,1 @@
-switchPDCOnPOSTOkendtimeVER_OP_MODEswitchPDCOff = 47
+switchPDCOnPOSTOkendtimeVER_OP_MODEswitchPDCOff

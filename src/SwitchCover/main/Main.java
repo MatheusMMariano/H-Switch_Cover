@@ -44,7 +44,7 @@ public class Main {
 		//Catch sequence in list and add in a unic String
 		for(int i = 0; i < listSequence.size(); i++){
 			String test = "";
-			/*if(typeFile.equals("xml")){
+			if(typeFile.equals("xml")){
 				for(int in = 0; in < listSequence.get(i).size(); in++) {
 					test = test + listSequence.get(i).get(in)+",";
 				}
@@ -57,15 +57,16 @@ public class Main {
 				}
 				else {
 					for(int in = 0; in < listSequence.get(i).size(); in++) {
-						test = test + (listSequence.get(i).get(in) +",");
+						//test = test + (listSequence.get(i).get(in) +",");
+						test = test + (listSequence.get(i).get(in).substring(listSequence.get(i).get(in).indexOf(">")+1, listSequence.get(i).get(in).indexOf("/"))+",");
 						//test = test + (listSequence.get(i).get(in).substring(listSequence.get(i).get(in).lastIndexOf('>')+1, listSequence.get(i).get(in).lastIndexOf('/'))+",");
 					}
 				}
-			}*/
-			
-			for(int in = 0; in < listSequence.get(i).size(); in++) {
-				test = test + (listSequence.get(i).get(in) +" ");
 			}
+			
+			//for(int in = 0; in < listSequence.get(i).size(); in++) {
+			//	test = test + (listSequence.get(i).get(in)+",");
+			//}
 			sequenceTest.add(test.substring(0, test.length()-1));
 		}
 		
@@ -132,7 +133,7 @@ public class Main {
 					}
 				}
 				
-				testList = testList + " = " + testList.length();
+				//testList = testList + " = " + testList.length();
 				testListSequence.add(testList);
 			}
 		}
@@ -211,8 +212,6 @@ public class Main {
 			if(typeFile.equals("xml")) graph = graph.openXML(path);
 			else graph = reader.generateTXTGraph(path);
 			
-			graph.showResult();
-			
 			if(graph.isConexo()) {
 				if(graph.getIteratorState().hasNext()){
 					if(i == 1 || i == 2 || i == 5 || i == 6){
@@ -286,10 +285,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						if(pathMEF.getName().equals("8-4-4")) {
+						//if(pathMEF.getName().equals("4-4-4")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								if(pathNumber.getName().equals("101")) {
+								//if(pathNumber.getName().equals("1")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -306,28 +305,38 @@ public class Main {
 											if(typeFile.equals("xml")) path = "./src/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											else path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											
-											//System.out.println();
+											long duracaoEmMilissegundos = 0;
 											Main main = new Main();
 											
-											Instant start = Instant.now();
-											main.createGraphTestCase(path, file.getName(), typeFile, i, criterion);
-											Instant stop = Instant.now();
-											
-											Duration duration = Duration.between(start, stop);
-											long duracaoEmMilissegundos = duration.toMillis();
-											System.out.println(path+" TIME (miliseconds): "+ duracaoEmMilissegundos);
-											
+											for(int ti = 0; ti < 100; ti++) {
+												Instant start = Instant.now();
+												main.createGraphTestCase(path, file.getName(), typeFile, i, criterion);
+												Instant stop = Instant.now();
+												
+												Duration duration = Duration.between(start, stop);
+												duracaoEmMilissegundos = duracaoEmMilissegundos + duration.toMillis();
+											}
+												
 											Reader read = new Reader();
-											read.insertFile("time"+typeFileName, duracaoEmMilissegundos);
+											//reader.insertFile(+"/"+name+".txt", testListSequence);
+											
+											if(typeFile.equals("xml")) {
+												System.out.println(path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt"+" TIME (miliseconds): "+ (duracaoEmMilissegundos/100));
+												read.insertFile(path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt", duracaoEmMilissegundos);
+											}
+											else {
+												System.out.println("src/"+path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt"+" TIME (miliseconds): "+ (duracaoEmMilissegundos/100));
+												read.insertFile("src/"+path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt", duracaoEmMilissegundos);
+											}
 										}
 									}
-								}
+								//}
 								}
 							}
 						}
 					}
 				}				
-			}
+			//}
 			}
 		}
 	}
@@ -367,9 +376,9 @@ public class Main {
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
 		Main main = new Main();
 		//main.source(main.inicialize());
-		main.source(main.inicialize(), 0, "test"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(main.inicialize(), 0, "test"); // 0: all transitions, 1: all transitions-pairs
 		
-		/*for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
+		for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
 			String criterion = "";
 			
 			if(x == 0) criterion = "Alltrans";
@@ -381,11 +390,11 @@ public class Main {
 				if(i == 1 || i == 5) typeFileName = "Breadth"+criterion;
 				else if(i == 2 || i == 6) typeFileName = "Depth"+criterion;
 				else if(i == 3 || i == 7) typeFileName = "Eulerian"+criterion;
-				else if(i == 4 || i == 8) typeFileName = "CPP"+criterion;
+				if(i == 4 || i == 8) typeFileName = "CPP"+criterion;
 					
 				main.source(i, x, typeFileName);
 			}
-		}*/
+		}
 	}
 
 }

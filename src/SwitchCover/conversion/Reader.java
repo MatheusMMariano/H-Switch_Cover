@@ -99,10 +99,8 @@ public class Reader {
 		this.br = new BufferedReader(new InputStreamReader(Reader.class.getResourceAsStream(path)));
 		Graph graph = new Graph();
 		boolean initial = false;
-		System.out.println(path);
 		
 		for(String line: readDataFile()){
-			System.out.println(line);
 			State source = null, destination = null;
 			
 			if(!initial) {
@@ -148,12 +146,10 @@ public class Reader {
 		File file = new File(nameFile);
 
 		try{
-			//if(!file.exists()) file.createNewFile();
 			file.createNewFile();
-			
 			bw = new BufferedWriter(new FileWriter(file));
 			bw.write(String.valueOf(total));
-			//bw.newLine();
+			bw.newLine();
 			bw.close();
 		}
 		catch(IOException ioe){
