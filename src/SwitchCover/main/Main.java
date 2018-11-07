@@ -285,10 +285,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						//if(pathMEF.getName().equals("4-4-4")) {
+						//if(pathMEF.getName().equals("12-4-4")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								//if(pathNumber.getName().equals("1")) {
+							//	if(pathNumber.getName().equals("98")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -304,10 +304,11 @@ public class Main {
 											
 											if(typeFile.equals("xml")) path = "./src/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
 											else path = "/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
-											
-											long duracaoEmMilissegundos = 0;
+											System.out.println(path);
 											Main main = new Main();
+											main.createGraphTestCase(path, file.getName(), typeFile, i, criterion);
 											
+											/*long duracaoEmMilissegundos = 0;
 											for(int ti = 0; ti < 100; ti++) {
 												Instant start = Instant.now();
 												main.createGraphTestCase(path, file.getName(), typeFile, i, criterion);
@@ -317,7 +318,7 @@ public class Main {
 												duracaoEmMilissegundos = duracaoEmMilissegundos + duration.toMillis();
 											}
 												
-											Reader read = new Reader();
+											/*Reader read = new Reader();
 											//reader.insertFile(+"/"+name+".txt", testListSequence);
 											
 											if(typeFile.equals("xml")) {
@@ -327,7 +328,7 @@ public class Main {
 											else {
 												System.out.println("src/"+path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt"+" TIME (miliseconds): "+ (duracaoEmMilissegundos/100));
 												read.insertFile("src/"+path.substring(0, path.lastIndexOf("/"))+"/time"+typeFileName+".txt", duracaoEmMilissegundos);
-											}
+											}*/
 										}
 									}
 								//}
@@ -377,7 +378,6 @@ public class Main {
 		Main main = new Main();
 		//main.source(main.inicialize());
 		//main.source(main.inicialize(), 0, "test"); // 0: all transitions, 1: all transitions-pairs
-		
 		for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
 			String criterion = "";
 			

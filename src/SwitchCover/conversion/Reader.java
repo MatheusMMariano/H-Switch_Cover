@@ -100,24 +100,31 @@ public class Reader {
 		Graph graph = new Graph();
 		boolean initial = false;
 		
-		for(String line: readDataFile()){
-			State source = null, destination = null;
-			
-			if(!initial) {
-				initial = true;
-				source = addSourceState(graph, line, "inicial");
+		//for(String line: readDataFile()){
+		try {
+			while(this.br.ready()){
+				String line = this.br.readLine();
+				State source = null, destination = null;
+				if(!line.isEmpty()){
+					if(!initial) {
+						initial = true;
+						source = addSourceState(graph, line, "inicial");
+					}
+					else {
+						String newSourceStateName = line.substring(0, line.lastIndexOf(" --"));
+						if(!stateIsPresentInGraph(graph, newSourceStateName)) source = addSourceState(graph, line, "normal");
+						else source = graph.getState(newSourceStateName);
+					}
+					
+					String newDestinationStateName = line.substring(line.indexOf(">")+2);
+					if(!stateIsPresentInGraph(graph, newDestinationStateName)) destination = addDestinationState(graph, line, "normal");
+					else destination = graph.getState(newDestinationStateName);
+					
+					addTransition(graph, source, destination, line);
+				}
 			}
-			else {
-				String newSourceStateName = line.substring(0, line.lastIndexOf(" --"));
-				if(!stateIsPresentInGraph(graph, newSourceStateName)) source = addSourceState(graph, line, "normal");
-				else source = graph.getState(newSourceStateName);
-			}
-			
-			String newDestinationStateName = line.substring(line.indexOf(">")+2);
-			if(!stateIsPresentInGraph(graph, newDestinationStateName)) destination = addDestinationState(graph, line, "normal");
-			else destination = graph.getState(newDestinationStateName);
-			
-			addTransition(graph, source, destination, line);
+		} catch(IOException ex){
+			return new Graph();
 		}
 		
 		close();
