@@ -1,1 +1,1 @@
-switchPDCOnPOSTOkendtimeVER_OP_MODEswitchPDCOff
+switchPDCOn,POSTOk,endtime,VER_OP_MODE,switchPDCOff
