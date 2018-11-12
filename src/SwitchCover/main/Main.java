@@ -158,8 +158,11 @@ public class Main {
 			for(int i = 0; i < transitionList.size(); i++) {
 				for(int j = i+1; j < transitionList.size(); j++) {
 					if(transitionList.get(i).getDestination().getName().equals(transitionList.get(j).getDestination().getName())) {
+						
 						Transition t = transitionList.get(j);
-						State _state = new State(state.getName()+"."+t.getInput(), "normal", true, state);
+						//State _state = new State(state.getName()+"."+t.getInput(), "normal", true, state);
+						//System.out.println(t.getInput());
+						State _state = new State(state.getName()+"."+j, "normal", true, state);
 						Transition _transition = new Transition("0", t.getOutput(), t.getName(), t.getDestination(), _state, false, 0);
 						_state.setTransition(_transition);
 						t.setDestination(_state);
@@ -240,6 +243,8 @@ public class Main {
 						else{
 							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 							dualGraphConverted.inicialState();
+							//Graph g = balancing.inicio(dualGraphConverted.clone());
+							//System.out.println(g.showResult());
 							eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
 						}
 					}
@@ -254,6 +259,8 @@ public class Main {
 						else {
 							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 							dualGraphConverted.inicialState();
+							//Graph g = posProcess(cpp.testCasePCC(preProcess(dualGraphConverted.clone())));
+							//System.out.println(g.showResult());
 							eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", posProcess(cpp.testCasePCC(preProcess(dualGraphConverted.clone()))), false);
 						}
 					}
@@ -290,7 +297,7 @@ public class Main {
 						//if(pathMEF.getName().equals("swpdc")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								//if(pathNumber.getName().equals("10")) {
+								//if(pathNumber.getName().equals("11")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -333,8 +340,8 @@ public class Main {
 											}*/
 										}
 									}
-								//}
 								}
+								//}
 							}
 						}
 					}
@@ -380,7 +387,6 @@ public class Main {
 		Main main = new Main();
 		//main.source(main.inicialize());
 		//main.source(3, 1, "EulerianAlltranspair");
-		
 		//main.source(4, 1, "CPPAlltranspair"); // 0: all transitions, 1: all transitions-pairs
 		
 		for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs

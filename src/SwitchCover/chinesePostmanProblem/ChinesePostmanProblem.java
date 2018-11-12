@@ -97,7 +97,7 @@ public class ChinesePostmanProblem {
 		Iterator<State> row = graph.getIteratorStateValue();
 		while(row.hasNext()){
 			State s = row.next();
-			//System.out.print(" "+s.getName()+"|");
+			//System.out.println(" "+s.getName()+"|");
 			for(Transition t : s.getTransitions()){
 				int r = s.getIdCPP();
 				int c = t.getDestination().getIdCPP();
@@ -283,7 +283,8 @@ public class ChinesePostmanProblem {
 	@SuppressWarnings("unchecked")
 	public Graph testCasePCC(Graph graph){
 		//https://www-m9.ma.tum.de/graph-algorithms/spp-floyd-warshall/index_en.html
-
+		//System.out.println("\n"+graph.showResult());
+		
 		//Step 1: Convert graph in a adjacent matrix
 		setIdCpp(graph);
 		int[][] matrix = createMatriz(graph, size(graph));
