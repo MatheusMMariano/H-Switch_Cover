@@ -98,7 +98,7 @@ public class FirstSearch {
 	
 	//BUSCA EM LARGURA
 	//ONLY PRINT
-	public List<String> breadthFirstSearch(State state){
+	/*public List<String> breadthFirstSearch(State state){
 		breadthLine.clear(); // não estava antes
 		
 		List<Transition> list = new ArrayList<Transition>();
@@ -117,9 +117,9 @@ public class FirstSearch {
 			list.remove(0);
 		}
 		return breadthLine;
-	}
+	}*/
 
-	public List<List<String>> TESTE(State state, State dest, int length, Graph graph){
+	/*public List<List<String>> TESTE(State state, State dest, int length, Graph graph){
 		graph.refresh();
 		breadthLine.clear();
 		//System.out.println("> "+ state.getName()+" -> "+ dest.getName());
@@ -159,5 +159,5 @@ public class FirstSearch {
 		//System.out.println("\n");
 		graph.refresh(); //não estava antes
 		return listSequence;
-	}
+	}*/
 }

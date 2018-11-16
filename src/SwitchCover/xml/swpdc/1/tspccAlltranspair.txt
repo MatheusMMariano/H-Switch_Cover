@@ -1,1 +1,1 @@
-switchPDCOn,POSTOk,endtime,VER_OP_MODE,switchPDCOff
+sPeVs

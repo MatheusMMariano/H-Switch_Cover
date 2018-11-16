@@ -38,50 +38,86 @@ public class Main {
 
 	}
 	
+	public List<String> newTratamentFile(List<List<String>> listSequence, String typeFile, String name){
+		List<String> sequenceTest = new LinkedList<String>();
+		
+		for(int seq = 0;  seq < listSequence.size(); seq++) {
+			String input = "";
+			
+			for(int inp = 0; inp < listSequence.get(seq).size(); inp++) {
+				input = input + listSequence.get(seq).get(inp);
+			}
+		}
+		
+		
+		return sequenceTest;
+	}
+	
 	public List<String> tratamentFile(List<List<String>> listSequence, String typeFile, String name){
 		List<String> sequenceTest = new LinkedList<String>();
 		
-		//Catch sequence in list and add in a unic String
+		//add sequence in a unique string to after check if this sequence is prefix
 		for(int i = 0; i < listSequence.size(); i++){
 			String test = "";
-			if(typeFile.equals("xml")){
-				for(int in = 0; in < listSequence.get(i).size(); in++) {
-					test = test + listSequence.get(i).get(in)+",";
-				}
+			for(int in = 0; in < listSequence.get(i).size(); in++) {
+				test = test + listSequence.get(i).get(in);
+			}
+			/*if(typeFile.equals("xml")){
+				for(int in = 0; in < listSequence.get(i).size(); in++) test = test + listSequence.get(i).get(in);
+				//if(listSequence.get(i).get(in).length() <= 1) test = test + listSequence.get(i).get(in);
+				//else test = test + listSequence.get(i).get(in).charAt(0);
 			}
 			else {
 				if(name.equals("Alltrans")) {
 					for(int in = 0; in < listSequence.get(i).size(); in++) {
-						test = test + (listSequence.get(i).get(in) +",");
+						test = test + (listSequence.get(i).get(in));
+						//if(listSequence.get(i).get(in).length() <= 1) test = test + (listSequence.get(i).get(in));
+						//else test = test + (listSequence.get(i).get(in).charAt(0));
 					}
 				}
 				else {
 					for(int in = 0; in < listSequence.get(i).size(); in++) {
-						//test = test + (listSequence.get(i).get(in) +",");
-						test = test + (listSequence.get(i).get(in).substring(listSequence.get(i).get(in).indexOf(">")+1, listSequence.get(i).get(in).indexOf("/"))+",");
+						String input = listSequence.get(i).get(in).substring(listSequence.get(i).get(in).indexOf(">")+1, listSequence.get(i).get(in).indexOf("/"));
+						test = test + (input);
+						//if(input.length() <= 1) test = test + (input);
+						//else test = test + (input.charAt(0));
 						//test = test + (listSequence.get(i).get(in).substring(listSequence.get(i).get(in).lastIndexOf('>')+1, listSequence.get(i).get(in).lastIndexOf('/'))+",");
 					}
 				}
-			}
-			
-			//for(int in = 0; in < listSequence.get(i).size(); in++) {
-			//	test = test + (listSequence.get(i).get(in)+",");
-			//}
-			sequenceTest.add(test.substring(0, test.length()-1));
+			}*/
+			sequenceTest.add(test);
 		}
 		
-		//Check if sequence is prefix; If is, remove it
+		//Check if sequence is prefix; If is, remove this sequence
 		for(int i = 0; i < sequenceTest.size(); i++){
 			for(int in = 1; in < sequenceTest.size(); in++){
 				if(i != in) {
 					if (i < sequenceTest.size() && sequenceTest.get(i).startsWith(sequenceTest.get(in))) {
 						sequenceTest.remove(in);
+						listSequence.remove(in);
 					}
 				}
 			}
 		}
-
-		return sequenceTest;
+		
+		//Generate the real sequence tests with no prefix sequences
+		List<String> testSuite = new LinkedList<String>();
+		for(int seq = 0; seq < listSequence.size(); seq++) {
+			String sequence = "";
+			for(int inp = 0; inp < listSequence.get(seq).size(); inp++) {
+				if(listSequence.get(seq).get(inp).length() <= 1) sequence = sequence + listSequence.get(seq).get(inp);
+				else{
+					//if(typeFile.equals("file") && name.equals("Alltranspair")) {
+					String input = listSequence.get(seq).get(inp).substring(listSequence.get(seq).get(inp).indexOf(">")+1, listSequence.get(seq).get(inp).indexOf("/"));
+					sequence = sequence + input.charAt(0);
+					//}
+					//else sequence = sequence + listSequence.get(seq).get(inp).charAt(0);
+				}
+			}
+			testSuite.add(sequence);
+		}
+		
+		return testSuite;
 	}
 	
 	public void firstSearchTestCase(String path, String typeFile, Reader reader, int i, String name, Graph g){
@@ -91,8 +127,12 @@ public class Main {
 		while(firstSearch.hasNext()){
 			State state = firstSearch.next();
 			if(state.getTypeState().equals("inicial")){
+				g.inicialState();
 				if(i == 1 || i == 5) firstSearchListSequence.addAll(search.breadthFirst(state, g));
-				else if(i == 2 || i == 6) firstSearchListSequence.addAll(search.depthFirst(state, g));
+				else if(i == 2 || i == 6) {
+					List<List<String>> testSequence = search.depthFirst(state, g);
+					firstSearchListSequence.addAll(testSequence);
+				}
 			}
 		}
 		
@@ -112,32 +152,33 @@ public class Main {
 	}
 	
 	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
-		GenerateTestCase testCaseBreadthFirstSearch = new GenerateTestCase(graphBalanced);
-		List<LinkedList<State>> testSequenceBreadth = testCaseBreadthFirstSearch.eulerianCycle();
+		GenerateTestCase testCaseSearch = new GenerateTestCase(graphBalanced);
+		List<LinkedList<State>> testSequence = testCaseSearch.eulerianCycle();
 		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
 		//GeraCasosTeste testCaseBreadthFirstSearch = new GeraCasosTeste(graphBalanced);
 		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.inicio();
 		
 		List<String> testListSequence = new LinkedList<String>();
 		
-		for(List<State> listState: testSequenceBreadth){
+		for(List<State> listState: testSequence){
 			if(!listState.isEmpty()){
 				String testList = "";
 				for(State state: listState) {
 					if(typeGraph){
-						testList = testList + (state.getName()+",");
+						if(state.getName().length() <= 1) testList = testList + (state.getName());
+						else testList = testList + (state.getName().charAt(0));
 					}
 					else{
-						
 						String input = state.getName().substring(state.getName().indexOf(">")+1, state.getName().indexOf("/"));
-						testList = testList + input +",";
-						//testList = testList + state.getName() +",";
+						if(input.length() <= 1) testList = testList + input;
+						else testList = testList + input.charAt(0);
 					}
 				}
 				
 				//testList = testList + " = " + testList.length();
 				//test.substring(0, test.length()-1)
-				testListSequence.add(testList.substring(0, testList.length()-1));
+				//testListSequence.add(testList.substring(0, testList.length()-1));
+				testListSequence.add(testList);
 			}
 		}
 		/*if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/"+name+".txt", testListSequence);
@@ -294,10 +335,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						//if(pathMEF.getName().equals("swpdc")) {
+						if(pathMEF.getName().equals("swpdc")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								//if(pathNumber.getName().equals("11")) {
+								if(pathNumber.getName().equals("5")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -341,12 +382,12 @@ public class Main {
 										}
 									}
 								}
-								//}
+								}
 							}
 						}
 					}
 				}				
-			//}
+			}
 			}
 		}
 	}
@@ -385,11 +426,12 @@ public class Main {
 
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
 		Main main = new Main();
+		
 		//main.source(main.inicialize());
 		//main.source(3, 1, "EulerianAlltranspair");
-		//main.source(4, 1, "CPPAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		main.source(1, 1, "BreadthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
 		
-		for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
+		/*for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
 			String criterion = "";
 			
 			if(x == 0) criterion = "Alltrans";
@@ -405,7 +447,7 @@ public class Main {
 					
 				main.source(i, x, typeFileName);
 			}
-		}
+		}*/
 	}
 
 }

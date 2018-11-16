@@ -1,1 +1,1 @@
-switchPDCOn,POSTOk,endtime,TX_DATA-Sci,start10s,endtime,CH_OP_MODE-Nominal,VER_OP_MODE,start10s,endtime,STOP_DATA_ACQ,start10s,endtime,TX_DATA-Sci,start10s,endtime,TX_DATA-Sci,start10s,endtime,RET_ANSW,start10s,endtime,VER_OP_MODE,ACT_HW_EPP1On,ACT_HW_EPP2On,start30s,endtime,TX_DATA-Sci,start10s,endtime,TX_DATA_SciN_0,start10s,endtime,RET_ANSW,start10s,endtime,TX_DATA-Sci,ACT_HW_EPP2Off,ACT_HW_EPP1Off,switchPDCOff
+sPeTseCVseSseTseTseRseVAAseTseTseRseTAAs

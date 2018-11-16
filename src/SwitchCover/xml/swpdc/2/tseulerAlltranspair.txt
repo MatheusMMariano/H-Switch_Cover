@@ -1,1 +1,1 @@
-switchPDCOn,POSTOk,endtime,VER_OP_MODE,ACT_HW_EPP1On,ACT_HW_EPP2On,start30s,endtime,ACT_HW_EPP2Off,ACT_HW_EPP1Off,switchPDCOff
+sPeVAAseAAs

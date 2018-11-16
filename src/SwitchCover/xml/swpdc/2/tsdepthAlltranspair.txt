@@ -1,1 +1,1 @@
-switchPDCOn/start60s,POSTOk/null,endtime/null,VER_OP_MODE/INFO_OP_MODE,ACT_HW_EPP1On/CMD_REC,ACT_HW_EPP2On/CMD_REC,start30s/null,endtime/null,ACT_HW_EPP2Off/CMD_REC,ACT_HW_EPP1Off/CMD_REC,switchPDCOff/null,switchPDCOn/start60s
+sPeVAAseAAss
