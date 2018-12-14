@@ -90,11 +90,18 @@ public class Main {
 		
 		//Check if sequence is prefix; If is, remove this sequence
 		for(int i = 0; i < sequenceTest.size(); i++){
-			for(int in = 1; in < sequenceTest.size(); in++){
+			for(int in = 0; in < sequenceTest.size(); in++){
 				if(i != in) {
-					if (i < sequenceTest.size() && sequenceTest.get(i).startsWith(sequenceTest.get(in))) {
-						sequenceTest.remove(in);
-						listSequence.remove(in);
+					if (i < sequenceTest.size() && sequenceTest.get(in).startsWith(sequenceTest.get(i))) {
+						if(sequenceTest.get(in).length() > sequenceTest.get(i).length()) {
+							sequenceTest.remove(i);
+							listSequence.remove(i);
+						}
+						else {
+							sequenceTest.remove(in);
+							listSequence.remove(in);
+						}
+						in=in-1;
 					}
 				}
 			}
@@ -107,11 +114,11 @@ public class Main {
 			for(int inp = 0; inp < listSequence.get(seq).size(); inp++) {
 				if(listSequence.get(seq).get(inp).length() <= 1) sequence = sequence + listSequence.get(seq).get(inp);
 				else{
-					//if(typeFile.equals("file") && name.equals("Alltranspair")) {
-					String input = listSequence.get(seq).get(inp).substring(listSequence.get(seq).get(inp).indexOf(">")+1, listSequence.get(seq).get(inp).indexOf("/"));
-					sequence = sequence + input.charAt(0);
-					//}
-					//else sequence = sequence + listSequence.get(seq).get(inp).charAt(0);
+					if(typeFile.equals("file") && name.equals("Alltranspair")) {
+						String input = listSequence.get(seq).get(inp).substring(listSequence.get(seq).get(inp).indexOf(">")+1, listSequence.get(seq).get(inp).indexOf("/"));
+						sequence = sequence + input.charAt(0);
+					}
+					else sequence = sequence + listSequence.get(seq).get(inp).charAt(0);
 				}
 			}
 			testSuite.add(sequence);
@@ -124,19 +131,35 @@ public class Main {
 		Iterator<State> firstSearch = g.getIteratorStateValue();
 		List<List<String>> firstSearchListSequence = new LinkedList<List<String>>();
 		
+		System.out.println(g.showResult());
+		
 		while(firstSearch.hasNext()){
 			State state = firstSearch.next();
 			if(state.getTypeState().equals("inicial")){
 				g.inicialState();
-				if(i == 1 || i == 5) firstSearchListSequence.addAll(search.breadthFirst(state, g));
+				
+				if(i == 1 || i == 5) {
+					//List<List<String>> testSequence = search.breadthFirst(state, g);
+					//firstSearchListSequence.addAll(testSequence);
+					List<List<Transition>> testSequence2 = search.bfs(state, g);
+					firstSearchListSequence.addAll(search.breadthFirst(testSequence2));
+				}
 				else if(i == 2 || i == 6) {
 					List<List<String>> testSequence = search.depthFirst(state, g);
 					firstSearchListSequence.addAll(testSequence);
+					
+					for(List<String> sequence: testSequence) {
+						System.out.print("");
+						for(String t: sequence) {
+							System.out.print("->"+t);
+						}
+						System.out.println("");
+					}
 				}
 			}
 		}
 		
-		if(i == 1 || i == 5){
+		/*if(i == 1 || i == 5){
 			if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));
 			else{
 				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));
@@ -148,7 +171,7 @@ public class Main {
 			else {
 				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsdepth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));				
 			}
-		}
+		}*/
 	}
 	
 	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
@@ -335,10 +358,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						if(pathMEF.getName().equals("swpdc")) {
+						if(pathMEF.getName().equals("4-4-4")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								if(pathNumber.getName().equals("5")) {
+								if(pathNumber.getName().equals("1")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -429,7 +452,9 @@ public class Main {
 		
 		//main.source(main.inicialize());
 		//main.source(3, 1, "EulerianAlltranspair");
-		main.source(1, 1, "BreadthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(5, 0, "BreadthAlltrans");
+		//main.source(1, 1, "BreadthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		main.source(6, 0, "DepthAlltrans"); // 0: all transitions, 1: all transitions-pairs
 		
 		/*for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
 			String criterion = "";

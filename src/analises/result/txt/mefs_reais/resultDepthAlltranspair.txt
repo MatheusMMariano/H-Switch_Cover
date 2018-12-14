@@ -1,5 +1,5 @@
 Folder,File,Number of test cases,Number of inputs (with resets),Number of inputs (no resets),Length of less test case,Length of largest test case,Average length,Standard deviation,Variance
-apex,1,170,1774,1604,3.0,12.0,9.435294117647059,1.3049478787435846,1.7028889662373814
+apex,1,168,1756,1588,3.0,12.0,9.452380952380953,1.3031951697322455,1.6983176504134563
 swpdc,1,1,7,6,6.0,6.0,6.0,0.0,0.0
 swpdc,10,2,52,50,25.0,25.0,25.0,0.0,0.0
 swpdc,11,2,44,42,17.0,25.0,21.0,5.656854249492381,32.0
