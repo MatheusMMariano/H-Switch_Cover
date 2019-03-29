@@ -1,0 +1,5 @@
+pDCOffIdle -- a / start60s -> iniMPostCoutingTime
+safeMEPPsOffIdle -- a / null -> pDCOffIdle
+safeMEnteredCoutingTime -- a / null -> safeMVerOpIdle
+iniMPostCoutingTime -- a / null -> safeMEnteredCoutingTime
+safeMVerOpIdle -- a / INFO_OP_MODE -> safeMEPPsOffIdle

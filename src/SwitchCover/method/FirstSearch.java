@@ -11,6 +11,8 @@ import SwitchCover.graph.Transition;
 public class FirstSearch {
 
 	private List<String> depthLine = new LinkedList<String>();
+	private List<Transition> depthFirstTestSuite = new LinkedList<Transition>();
+	
 	private List<String> breadthLine = new LinkedList<String>();
 	
 	public FirstSearch(){
@@ -20,39 +22,94 @@ public class FirstSearch {
 	public List<List<String>> depthFirst(State state, Graph graph){
 		depthLine.clear();
 		
-		List<List<String>> listSequence = new LinkedList<List<String>>();
-		List<String> stack = new LinkedList<String>();
-		stack.add(state.getName());
+		//List<List<State>> listSequence = new LinkedList<List<State>>();
+		List<List<String>> testSuite = new LinkedList<List<String>>();
 		
-		while(!stack.isEmpty()){
+		//List<State> stack = new LinkedList<State>();
+		List<String> testSequence = new LinkedList<String>();
+		
+		//stack.add(state);
+		testSequence.add(state.getName());
+		
+		while(!testSequence.isEmpty()){
 			depthLine.clear();
-			List<String> sequence = depthFirstSearch(graph.getState(stack.get(stack.size()-1)));
+			List<String> sequence = depthFirstSearch(graph.getState(testSequence.get(testSequence.size()-1)));
 			
 			if(!sequence.isEmpty()){
-				stack.addAll(sequence);
-				List<String> ts = new LinkedList<String>();
-				ts.addAll(stack);
-				listSequence.add(ts);
+				//for(State s: sequence) testSequence.add(s.getName());
+				testSequence.addAll(sequence);
+				//stack.addAll(sequence);
+				
+				//List<State> ts = new LinkedList<State>();
+				List<String> ts2 = new LinkedList<String>();
+				
+				ts2.addAll(testSequence);
+				//ts.addAll(stack);
+				
+				//listSequence.add(ts);
+				testSuite.add(ts2);
 			}
-			stack.remove(stack.size()-1);
+			//stack.remove(stack.size()-1);
+			testSequence.remove(testSequence.size()-1);
+			//System.out.println();
 		}
 		graph.refresh(); //não estava antes
-		return listSequence;
+		//System.out.println(testSuite);
+		return testSuite;
+		//return listSequence;
 	}
 	
+	//String.valueOf(t.getInput().charAt(t.getInput().length()-1))
 	//BUSCA EM PROFUNDIDADE | DEPTH FIRST SEARCH
 	private List<String> depthFirstSearch(State state){
 		if(!state.getVisited()) state.setVisited(true);
 		for(Transition t: state.getTransitions()){
 			if(!t.getVisited()){
 				t.setVisited(true);	
-				System.out.println(t.getDestination().getName());
+				//System.out.print("->"+t.getDestination().getName());
 				depthLine.add(t.getDestination().getName());
 				depthFirstSearch(t.getDestination());
 				break;
 			}
 		}
 		return depthLine;
+	}
+	
+	public List<List<Transition>> dfs(State state, Graph graph){
+		depthFirstTestSuite.clear();
+		
+		List<List<Transition>> listSequence = new LinkedList<List<Transition>>();
+		List<Transition> stack = new LinkedList<Transition>();
+		state.getTransitions().get(0).setVisited(true);
+		stack.add(state.getTransitions().get(0));
+		
+		while(!stack.isEmpty()){
+			depthFirstTestSuite.clear();
+			List<Transition> sequence = depthFirstTestSuite(stack.get(stack.size()-1).getDestination());
+
+			if(!sequence.isEmpty()){
+				stack.addAll(sequence);
+				List<Transition> ts = new LinkedList<Transition>();
+				ts.addAll(stack);
+				listSequence.add(ts);
+			}
+			stack.remove(stack.size()-1);
+		}
+		graph.refresh();
+		return listSequence;
+	}
+	
+	private List<Transition> depthFirstTestSuite(State state){
+		if(!state.getVisited()) state.setVisited(true);
+		for(Transition t: state.getTransitions()){
+			if(!t.getVisited()){
+				t.setVisited(true);
+				depthFirstTestSuite.add(t);
+				depthFirstTestSuite(t.getDestination());
+				break;
+			}
+		}
+		return depthFirstTestSuite;
 	}
 	
 
@@ -69,6 +126,7 @@ public class FirstSearch {
 				state = graph.getState(listSequence.get(idList).get(idElement));
 				//se NAO foi visitado, pego os filhos
 				if(!state.getVisited()){
+					
 					state.setVisited(true);
 					if(state.getTransitions().size() == 1) listSequence.get(idList).add(state.getTransitions().get(0).getDestination().getName());
 					else /*if(state.getTransitions().size() > 1)*/{
@@ -92,7 +150,7 @@ public class FirstSearch {
 		breadthLine.clear();
 		List<List<Transition>> testSuite = new LinkedList<List<Transition>>();
 		int breadth = 1;
-		
+		//System.out.println(state.getName());
 		if(!state.getVisited()) {
 			state.setVisited(true);
 			
@@ -133,12 +191,15 @@ public class FirstSearch {
 		return testSuite;
 	}
 	
-	public List<List<String>> breadthFirst(List<List<Transition>> testSuite){
+	public List<List<String>> testSuiteString(List<List<Transition>> testSuite, String criterion){
 		List<List<String>> testSuiteCopy = new LinkedList<List<String>>();
 		for(List<Transition> sequence: testSuite) {
 			List<String> newSequence = new LinkedList<String>();
 			for(Transition t: sequence) {
-				newSequence.add(String.valueOf(t.getInput().charAt(0)));
+				if(criterion.equals("Alltrans")) newSequence.add(String.valueOf(t.getInput().charAt(t.getInput().length()-1)));
+				else {
+					newSequence.add(String.valueOf(t.getInput().substring(t.getInput().indexOf(">")+1, t.getInput().indexOf("/")).charAt(0)));
+				}
 			}
 			testSuiteCopy.add(newSequence);
 		}

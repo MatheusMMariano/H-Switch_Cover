@@ -114,7 +114,7 @@ public class Main {
 			for(int inp = 0; inp < listSequence.get(seq).size(); inp++) {
 				if(listSequence.get(seq).get(inp).length() <= 1) sequence = sequence + listSequence.get(seq).get(inp);
 				else{
-					if(typeFile.equals("file") && name.equals("Alltranspair")) {
+					if(name.equals("Alltranspair")) {
 						String input = listSequence.get(seq).get(inp).substring(listSequence.get(seq).get(inp).indexOf(">")+1, listSequence.get(seq).get(inp).indexOf("/"));
 						sequence = sequence + input.charAt(0);
 					}
@@ -124,70 +124,86 @@ public class Main {
 			testSuite.add(sequence);
 		}
 		
+		
 		return testSuite;
 	}
 	
-	public void firstSearchTestCase(String path, String typeFile, Reader reader, int i, String name, Graph g){
+	public void firstSearchTestCase(String path, String typeFile, Reader reader, int i, String criterion, Graph g){
 		Iterator<State> firstSearch = g.getIteratorStateValue();
 		List<List<String>> firstSearchListSequence = new LinkedList<List<String>>();
 		
-		System.out.println(g.showResult());
+		//System.out.println(g.showResult());
 		
 		while(firstSearch.hasNext()){
 			State state = firstSearch.next();
+			//System.out.println(state.getName());
 			if(state.getTypeState().equals("inicial")){
 				g.inicialState();
 				
 				if(i == 1 || i == 5) {
-					//List<List<String>> testSequence = search.breadthFirst(state, g);
-					//firstSearchListSequence.addAll(testSequence);
-					List<List<Transition>> testSequence2 = search.bfs(state, g);
-					firstSearchListSequence.addAll(search.breadthFirst(testSequence2));
+					if(criterion.equals("Alltrans")) {
+						List<List<Transition>> ts = search.bfs(state, g);
+						firstSearchListSequence.addAll(search.testSuiteString(ts, criterion));
+						System.out.println(ts);
+						System.out.println(tratamentFile(firstSearchListSequence, typeFile, criterion));
+					}
+					else {
+						List<List<String>> testSequence = search.breadthFirst(state, g);
+						firstSearchListSequence.addAll(testSequence);
+						System.out.println(testSequence);
+						System.out.println(tratamentFile(firstSearchListSequence, typeFile, criterion));
+					}
 				}
 				else if(i == 2 || i == 6) {
-					List<List<String>> testSequence = search.depthFirst(state, g);
-					firstSearchListSequence.addAll(testSequence);
-					
-					for(List<String> sequence: testSequence) {
-						System.out.print("");
-						for(String t: sequence) {
-							System.out.print("->"+t);
-						}
-						System.out.println("");
+					if(criterion.equals("Alltrans")) {
+						List<List<Transition>> ts = search.dfs(state, g);
+						firstSearchListSequence.addAll(search.testSuiteString(ts, criterion));
+						//System.out.println(ts);
+						//System.out.println(tratamentFile(firstSearchListSequence, typeFile, criterion));
+					}
+					else {
+						List<List<String>> testSequence = search.depthFirst(state, g);
+						firstSearchListSequence.addAll(testSequence);
+						//System.out.println(testSequence);
+						//System.out.println(tratamentFile(firstSearchListSequence, typeFile, criterion));
 					}
 				}
 			}
 		}
 		
-		/*if(i == 1 || i == 5){
-			if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));
+		if(i == 1 || i == 5){
+			if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+criterion+".txt", tratamentFile(firstSearchListSequence, typeFile, criterion));
 			else{
-				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));
+				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsbreadth"+criterion+".txt", tratamentFile(firstSearchListSequence, typeFile, criterion));
 				//reader.insertFile(path+"/tsbreadth.txt", tratamentFile(firstSearchListSequence, typeFile));
 			}
 		}
 		else if(i == 2 || i == 6){
-			if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsdepth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));
+			if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsdepth"+criterion+".txt", tratamentFile(firstSearchListSequence, typeFile, criterion));
 			else {
-				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsdepth"+name+".txt", tratamentFile(firstSearchListSequence, typeFile, name));				
+				reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/tsdepth"+criterion+".txt", tratamentFile(firstSearchListSequence, typeFile, criterion));				
 			}
-		}*/
+		}
 	}
 	
-	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String name, Graph graphBalanced, boolean typeGraph){
-		GenerateTestCase testCaseSearch = new GenerateTestCase(graphBalanced);
-		List<LinkedList<State>> testSequence = testCaseSearch.eulerianCycle();
+	public void eulerianCycleTestCase(String path, String typeFile, Reader reader, String criterion, Graph graphBalanced, boolean typeGraph){
+		GenerateTestCase testCaseSearch = new GenerateTestCase(graphBalanced.clone());
+		List<String> testSequence;
+		
+		if(typeGraph) testSequence = testCaseSearch.eulerianCycleTestSuite();
+		else testSequence = testCaseSearch.eulerianCycle();
+		//System.out.println(testSequence);
+		
 		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.initial();
 		//GeraCasosTeste testCaseBreadthFirstSearch = new GeraCasosTeste(graphBalanced);
 		//List<List<State>> testSequenceBreadth = testCaseBreadthFirstSearch.inicio();
-		
-		List<String> testListSequence = new LinkedList<String>();
+		/*List<String> testListSequence = new LinkedList<String>();
 		
 		for(List<State> listState: testSequence){
 			if(!listState.isEmpty()){
 				String testList = "";
 				for(State state: listState) {
-					if(typeGraph){
+					if(typeGraph){				
 						if(state.getName().length() <= 1) testList = testList + (state.getName());
 						else testList = testList + (state.getName().charAt(0));
 					}
@@ -203,12 +219,12 @@ public class Main {
 				//testListSequence.add(testList.substring(0, testList.length()-1));
 				testListSequence.add(testList);
 			}
-		}
+		}*/
 		/*if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/"+name+".txt", testListSequence);
 		else reader.insertFile("src/"+path.substring(0, path.length() - (path.length() - path.lastIndexOf("/")))+"/"+name+".txt", testListSequence);*/
 		
-		if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.lastIndexOf("/"))+"/"+name+".txt", testListSequence);
-		else reader.insertFile("src/"+path.substring(0, path.lastIndexOf("/"))+"/"+name+".txt", testListSequence);		
+		if(typeFile.equals("xml")) reader.insertFile(path.substring(0, path.lastIndexOf("/"))+"/"+criterion+".txt", testSequence);
+		else reader.insertFile("src/"+path.substring(0, path.lastIndexOf("/"))+"/"+criterion+".txt", testSequence);
 	}
 
 	private Graph preProcess(Graph graph) {
@@ -274,13 +290,34 @@ public class Main {
 		System.out.println(count);
 	}
 	
+	
+	
 	private void createGraphTestCase(String path, String fileName, String typeFile, int i, int criterion) throws ParserConfigurationException, SAXException, IOException{
 		try{
 			//Step 01: Create graph by 1) XML or 2) a TXT file
 			Reader reader = new Reader();
 			
-			if(typeFile.equals("xml")) graph = graph.openXML(path);
+			if(typeFile.equals("xml")) {
+				graph = graph.openXML(path);
+				Iterator<State> states = graph.getIteratorStateValue();
+				String id = "abcdefghijklmnopqrstuvwxyz0123456789"; //gambiarra para substituir uma entrada do modelo real para um caracter
+				
+				while(states.hasNext()) {
+					State state = states.next();
+					List<Transition> transitions = state.getTransitions();
+					
+					int in = 0;
+					for(Transition t: transitions) {
+						t.setInput(t.getSource().getName()+">"+String.valueOf(id.charAt(in)));
+						in=in+1;
+					}
+				}
+				//System.out.println(path.substring(0, path.lastIndexOf("/"))+"/fsm1.txt");
+				reader.createMEF(path.substring(0, path.lastIndexOf("/"))+"/fsm1.txt", graph);
+			}
 			else graph = reader.generateTXTGraph(path);
+			
+			//System.out.println(graph.showResult()+"\n\n");
 			
 			if(graph.isConexo()) {
 				if(graph.getIteratorState().hasNext()){
@@ -307,8 +344,6 @@ public class Main {
 						else{
 							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 							dualGraphConverted.inicialState();
-							//Graph g = balancing.inicio(dualGraphConverted.clone());
-							//System.out.println(g.showResult());
 							eulerianCycleTestCase(path, typeFile, reader, "tseulerAlltranspair", balancing.inicio(dualGraphConverted.clone()), false);
 						}
 					}
@@ -323,8 +358,6 @@ public class Main {
 						else {
 							dualGraphConverted = node.transitionsConvertedNode(graph, typeFile);
 							dualGraphConverted.inicialState();
-							//Graph g = posProcess(cpp.testCasePCC(preProcess(dualGraphConverted.clone())));
-							//System.out.println(g.showResult());
 							eulerianCycleTestCase(path, typeFile, reader, "tspccAlltranspair", posProcess(cpp.testCasePCC(preProcess(dualGraphConverted.clone()))), false);
 						}
 					}
@@ -358,10 +391,10 @@ public class Main {
 				for(File pathMEF : pathXMLFile.listFiles()){ //APEX or SWPDC | 4-4-4, 8-8-8...
 					//System.out.println(pathMEF.getName());
 					if(!pathMEF.getName().equals(".DS_Store")){
-						if(pathMEF.getName().equals("4-4-4")) {
+						//if(pathMEF.getName().equals("swpdc")) {
 						for(File pathNumber : pathMEF.listFiles()){ //1, 2, 3...
 							if(!pathNumber.getName().equals(".DS_Store")){
-								if(pathNumber.getName().equals("1")) {
+								//if(pathNumber.getName().equals("1")) {
 								//System.out.println(pathNumber);
 								for(File file : pathNumber.listFiles()){ //fsm1, fsm2...
 									if(!file.getName().equals(".DS_Store")){
@@ -372,7 +405,7 @@ public class Main {
 										   !file.getName().contains("timeDepth") && 
 										   !file.getName().contains("timeBreadth") && 
 										   !file.getName().contains("timeEuler") &&
-										   !file.getName().contains("timeCPP")){
+										   !file.getName().contains("timeCPP") /*&& !file.getName().contains("fsm1")*/){
 											String path = "";
 											
 											if(typeFile.equals("xml")) path = "./src/SwitchCover/"+pathXMLFile.getName()+"/"+pathMEF.getName()+"/"+pathNumber.getName()+"/"+file.getName();
@@ -405,13 +438,13 @@ public class Main {
 										}
 									}
 								}
-								}
+								//}
 							}
 						}
 					}
 				}				
 			}
-			}
+			//}
 		}
 	}
 	
@@ -451,12 +484,17 @@ public class Main {
 		Main main = new Main();
 		
 		//main.source(main.inicialize());
-		//main.source(3, 1, "EulerianAlltranspair");
-		//main.source(5, 0, "BreadthAlltrans");
-		//main.source(1, 1, "BreadthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
-		main.source(6, 0, "DepthAlltrans"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(4, 0, "CPPAlltrans");
+		//main.source(3, 0, "EulerianAlltrans"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(2, 0, "DepthAlltrans"); // 0: all transitions, 1: all transitions-pairs
+		main.source(1, 0, "BreadthAlltrans"); // 0: all transitions, 1: all transitions-pairs
 		
-		/*for(int x = 0 ; x < 2; x++) { // 0: all transitions, 1: all transitions-pairs
+		//main.source(4, 1, "CPPAlltranspair");
+		//main.source(3, 1, "EulerianAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(2, 1, "DepthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		//main.source(1, 1, "BreadthAlltranspair"); // 0: all transitions, 1: all transitions-pairs
+		
+		/*for(int x = 0 ; x < 1; x++) { // 0: all transitions, 1: all transitions-pairs
 			String criterion = "";
 			
 			if(x == 0) criterion = "Alltrans";

@@ -22,7 +22,7 @@ public class Balancing {
 	public int retornaNumTransSaida(State pEstado){
 		int numSaida = 0;
 		
-		/* Pega número de transição de saída */
+		/* Pega nï¿½mero de transiï¿½ï¿½o de saï¿½da */
 		if(pEstado.getTransitions()!= null){
     	    Iterator transIt = pEstado.getTransitionIterator();
     		while (transIt.hasNext()){     
@@ -102,10 +102,10 @@ public class Balancing {
 			String nomeEstado = (String)estadosIt.next();
 			State estado = pMaquina.getState(nomeEstado);
 			
-			// Pega número de transição de saída 
+			// Pega nï¿½mero de transiï¿½ï¿½o de saï¿½da 
 			numTransicaoSaida = retornaNumTransSaida(estado);
 			
-			// Pega número de transição de entrada 
+			// Pega nï¿½mero de transiï¿½ï¿½o de entrada 
 			numTransicaoEntrada = retornaNumTransEntrada(pMaquina, estado);
 			
 			if(numTransicaoSaida!= numTransicaoEntrada){
@@ -128,10 +128,10 @@ public class Balancing {
 		int numTransicaoSaida = 0;
 		int numTransicaoEntrada = 0;
 	
-			// Pega número de transição de saída 
+			// Pega nï¿½mero de transiï¿½ï¿½o de saï¿½da 
 			numTransicaoSaida = retornaNumTransSaida(pEstado);
 			
-			// Pega número de transição de entrada 
+			// Pega nï¿½mero de transiï¿½ï¿½o de entrada 
 			numTransicaoEntrada = retornaNumTransEntrada(pMaquina, pEstado);
 			
 				if(numTransicaoSaida!= numTransicaoEntrada){
@@ -150,10 +150,10 @@ public class Balancing {
 	public Boolean verificaEntradaSaida(Graph pMaquina, State pEstado){
 		int numTransicaoSaida = 0;
 		int numTransicaoEntrada = 0;
-		// Pega número de transição de saída 
+		// Pega nï¿½mero de transiï¿½ï¿½o de saï¿½da 
 		numTransicaoSaida = retornaNumTransSaida(pEstado);
 			
-		// Pega número de transição de entrada 
+		// Pega nï¿½mero de transiï¿½ï¿½o de entrada 
 		numTransicaoEntrada = retornaNumTransEntrada(pMaquina, pEstado);
 		
 		if(numTransicaoEntrada > numTransicaoSaida){
@@ -346,12 +346,24 @@ public class Balancing {
 		if(stateDestination.getBalancedStatus() == true) stateDestination.setBalancedStatus(false);
 	}*/
 	
+	private String inputValue(State pEstadoOrigem, State pEstadoDestino) {
+		List<Transition> transitions = pEstadoOrigem.getTransitions();
+		for(Transition t: transitions) {
+			if(t.getSource().equals(pEstadoOrigem) && t.getDestination().equals(pEstadoDestino)) {
+				return t.getInput();
+			}
+		}
+		return pEstadoOrigem.getName()+">0";
+	}
+	
 	public void adicionaAresta(State pEstadoOrigem, State pEstadoDestino){
 
 		Transition novaAresta = new Transition();
 		novaAresta.setSource(pEstadoOrigem);
 		novaAresta.setDestination(pEstadoDestino);
-		novaAresta.setInput(pEstadoOrigem.getName()+pEstadoDestino.getName());
+		
+		novaAresta.setInput(inputValue(pEstadoOrigem, pEstadoDestino));
+		//novaAresta.setInput(pEstadoOrigem.getName()+pEstadoDestino.getName());
 		
 		pEstadoOrigem.setTransition(novaAresta);
 		
@@ -424,8 +436,8 @@ public State retornaMelhorFilho(Graph pMaquina, State pEstadoDesbalanceado) {
 	    Iterator itrans = listaTrans.iterator();
 	    
 	    /*
-	     * Este while vai retornar todos os filhos do estado em questão
-	     * e lista os que estão balanceados e os que nao estão balanceados
+	     * Este while vai retornar todos os filhos do estado em questï¿½o
+	     * e lista os que estï¿½o balanceados e os que nao estï¿½o balanceados
 	     */
 	    while (itrans.hasNext()) {
 	    	Transition transicaoFilho = (Transition) itrans.next();
@@ -450,7 +462,7 @@ public State retornaMelhorFilho(Graph pMaquina, State pEstadoDesbalanceado) {
 			
 			/**
 			 * Dentre a lista de filhos balanceados, se tiver alguns dos estados ja foi balnceado mais do que 
-			 * o outro, pegará o menos balanceado para atribuir a aresta. Para isso pega o valor do contador
+			 * o outro, pegarï¿½ o menos balanceado para atribuir a aresta. Para isso pega o valor do contador
 			 * de balanceamento que cada estado tem.
 			 */
 			State menor = (State)listaFilhoBalanceado.get(0); 
@@ -502,12 +514,12 @@ public State retornaMelhorFilho(Graph pMaquina, State pEstadoDesbalanceado) {
 	public void balanceiaEstado(Graph pMaquina, State estadoDesbalanceado){
 		
 		/**
-		 * Primeira coisa a se fazer é verificar onde o estado esta carente de aresta, na entrada ou na saida.
-		 * Se a saida for maior que a entrada, ja sabemos que a melhor opção para se adicionar uma aresta é 
+		 * Primeira coisa a se fazer ï¿½ verificar onde o estado esta carente de aresta, na entrada ou na saida.
+		 * Se a saida for maior que a entrada, ja sabemos que a melhor opï¿½ï¿½o para se adicionar uma aresta ï¿½ 
 		 * na entrada. 
 		 */
 		if(verificaEntradaSaida(pMaquina, estadoDesbalanceado)){//se a saida for maior retorna true
-			//aqui verificou-se que é melhor adicinar uma aresta do pai do estado desbalanceado, porém tem que saber
+			//aqui verificou-se que ï¿½ melhor adicinar uma aresta do pai do estado desbalanceado, porï¿½m tem que saber
 			//depois que transformou as arestas em estados, se todos dos estados continuam tendo pais
 			//se nao tiver, coloca no filho as arestas
 			if(verificaSeTemPai(pMaquina, estadoDesbalanceado)){

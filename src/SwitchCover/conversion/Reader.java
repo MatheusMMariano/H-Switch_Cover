@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import SwitchCover.graph.Graph;
@@ -129,6 +130,35 @@ public class Reader {
 		
 		close();
 		return graph;
+	}
+	
+	public void createMEF(String nameFile, Graph graph) {
+		File file = new File(nameFile);
+		
+		try {
+			file.createNewFile();
+			bw = new BufferedWriter(new FileWriter(file));
+			Iterator<State> states = graph.getIteratorStateValue();
+			
+			while(states.hasNext()) {
+				State state = states.next();
+				List<Transition> transitions = state.getTransitions();
+				
+				//if(state.getInitialSequence()){
+					//bw.
+				//}
+				//else {
+					for(Transition t: transitions) {
+						bw.write(t.getSource().getName()+" -- "+t.getInput().charAt(t.getInput().length()-1)+" / "+t.getOutput()+" -> "+t.getDestination().getName());
+						bw.newLine();
+					}
+				//}
+			}
+			bw.close();
+		}
+		catch(IOException ioe){
+			System.out.println("\nFILE ERROR: "+ioe.toString());
+		}
 	}
 	
 	public void insertFile(String nameFile, List<String> dataList){

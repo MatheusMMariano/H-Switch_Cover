@@ -23,41 +23,42 @@ do
 	for file in $path
 	do
 		FILE_NAME=$(basename $file)
-		
+		fsm1=$file"/fsm1.txt"
+
 		#Breadth alltrans / alltranspair
 		breadthAlltrans=$file"/tsbreadthAlltrans.txt"
-		resultbreadthAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $breadthAlltrans)"
+		resultbreadthAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $breadthAlltrans)"
 		echo $resultbreadthAlltrans >> "result/txt/mefs_aleatorias/"resultBreadthAlltrans.txt
 		
 		breadthAlltranspair=$file"/tsbreadthAlltranspair.txt"
-		resultbreadthAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $breadthAlltranspair)"
+		resultbreadthAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $breadthAlltranspair)"
 		echo $resultbreadthAlltranspair >> "result/txt/mefs_aleatorias/"resultBreadthAlltranspair.txt
 
 		#Depth alltrans / alltranspair
 		depthAlltrans=$file"/tsdepthAlltrans.txt"
-		resultdepthAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $depthAlltrans)"
+		resultdepthAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $depthAlltrans)"
 		echo $resultdepthAlltrans >> "result/txt/mefs_aleatorias/"resultDepthAlltrans.txt
 		
 		depthAlltranspair=$file"/tsdepthAlltranspair.txt"
-		resultdepthAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $depthAlltranspair)"
+		resultdepthAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $depthAlltranspair)"
 		echo $resultdepthAlltranspair >> "result/txt/mefs_aleatorias/"resultDepthAlltranspair.txt
 
 		#H-Switch Cover alltrans / alltranspair
 		eulerAlltrans=$file"/tseulerAlltrans.txt"
-		resulteulerAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $eulerAlltrans)"
+		resulteulerAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $eulerAlltrans)"
 		echo $resulteulerAlltrans >> "result/txt/mefs_aleatorias/"resultEulerAlltrans.txt
 		
 		eulerAlltranspair=$file"/tseulerAlltranspair.txt"
-		resulteulerAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $eulerAlltranspair)"
+		resulteulerAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $eulerAlltranspair)"
 		echo $resulteulerAlltranspair >> "result/txt/mefs_aleatorias/"resultEulerAlltranspair.txt
 
 		#PCC alltrans / alltranspair
 		pccAlltrans=$file"/tspccAlltrans.txt"
-		resultpccAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $pccAlltrans)"
+		resultpccAlltrans="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $pccAlltrans)"
 		echo $resultpccAlltrans >> "result/txt/mefs_aleatorias/"resultPCCAlltrans.txt
 		
 		pccAlltranspair=$file"/tspccAlltranspair.txt"
-		resultpccAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar fsm1.txt $pccAlltranspair)"
+		resultpccAlltranspair="$FOLDER_NAME,$FILE_NAME,$(java -jar HighOrderMutants.jar $fsm1 $pccAlltranspair)"
 		echo $resultpccAlltranspair >> "result/txt/mefs_aleatorias/"resultPCCAlltranspair.txt
 	done
 done

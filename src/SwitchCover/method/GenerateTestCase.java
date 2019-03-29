@@ -52,6 +52,37 @@ public class GenerateTestCase {
 		this.graph = graph;
 	}
 	
+	private List<String> eulerianTestSuiteAllTranspairs(List<LinkedList<State>> testSuite){
+		List<String> testListSequence = new LinkedList<String>();
+		for(List<State> listState: testSuite){
+			if(!listState.isEmpty()){
+				String testList = "";
+				for(State state: listState) {
+					String input = state.getName().substring(state.getName().indexOf(">")+1, state.getName().indexOf("/"));
+					if(input.length() <= 1) testList = testList + input;
+					else testList = testList + input.charAt(0);	
+				}
+				testListSequence.add(testList);
+			}
+		}
+		return testListSequence;
+	}
+	
+	private List<String> eulerianTestSuiteAllTrans(List<LinkedList<Transition>> testSuite){
+		List<String> testListSequence = new LinkedList<String>();
+		for(List<Transition> listState: testSuite){
+			if(!listState.isEmpty()){
+				String testList = "";
+				for(Transition t: listState) {
+					testList = testList + (String.valueOf(t.getInput().charAt(t.getInput().length()-1)));
+				}
+			
+				testListSequence.add(testList);
+			}
+		}
+		return testListSequence;
+	}
+	
 	private List<State> returnInicialStates(Graph graph){
 		Iterator<State> statesIterator = graph.getIteratorStateValue();
 		while(statesIterator.hasNext()){
@@ -105,12 +136,12 @@ public class GenerateTestCase {
 	}
 	
 	private List<Cycle> course(State state){
-		System.out.println("\n>>"+state.getName()+": peso = "+state.getPonderosity());
+		//System.out.println("\n>>"+state.getName()+": peso = "+state.getPonderosity());
 		Iterator<Transition> transitionsIterator = state.getTransitionIterator();
 		
 		while(transitionsIterator.hasNext() && caseFound == false){
 			Transition transition = transitionsIterator.next();
-			System.out.println("  |->"+transition.getSource().getName()+"->"+transition.getDestination().getName()+"["+transition.getName()+"]"+", "+transition.getVisited());
+			//System.out.println("  |->"+transition.getSource().getName()+"->"+transition.getDestination().getName()+"["+transition.getName()+"]"+", "+transition.getVisited());
 			
 			if(transition.getVisited() == false){
 				State stateDestination = transition.getDestination();
@@ -118,19 +149,19 @@ public class GenerateTestCase {
 				
 				if(!stateDestination.equals(stateInitial)){
 					if (!stateDestination.equals(state)){
-						System.out.println("     É DIFERENTE!");
+						//System.out.println("     É DIFERENTE!");
 						stateList.add(stateDestination);
 						transition.setVisited(true);
 						stateDestination.setVisited(true);
 						testCase = testCase + stateDestination.getName() + ", ";
-						System.out.println("     "+testCase);
+						//System.out.println("     "+testCase);
 						course(stateDestination);
 					}
 				}
 				else{
-					System.out.println("     É IGUAL!");
+					//System.out.println("     É IGUAL!");
 					transition.setVisited(true);
-					System.out.println("     "+testCase);
+					//System.out.println("     "+testCase);
 					listTestCase.add(testCase);
 					
 					Cycle cycle = new Cycle();
@@ -146,7 +177,7 @@ public class GenerateTestCase {
 						stateList.add(stateInitial);
 						testCase = new String();
 						stateInitial.setVisited(true);
-						course(stateInitial); //0->0, 
+						course(stateInitial);
 					}
 					caseFound = true;
 					break;
@@ -157,12 +188,11 @@ public class GenerateTestCase {
 	}
 	
 	public List<List<State>> initial(){
-		System.out.println("\n");
 		Iterator<State> statesIterator = returnInicialStates(graph).iterator();
 		
 		while(statesIterator.hasNext()){
 			stateInitial = statesIterator.next();
-			System.out.println(stateInitial.getName());
+			//System.out.println(stateInitial.getName());
 			setFalseTransitionsStates();
 			
 			stateInitial.setVisited(true);
@@ -203,29 +233,38 @@ public class GenerateTestCase {
 	
 	private LinkedList<State> generateEulerianCycleSequence(List<LinkedList<Transition>> cycleSet){
 		int i = 0;
+		//LinkedList<Transition> eulerianTestSuite = new LinkedList<Transition>();
 		LinkedList<State> eulerianSequence = new LinkedList<State>();
 		
 		while(!cycleSet.isEmpty()){
-			//System.out.println("\n"+eulerianSequence);
 			List<Transition> cycle = cycleSet.get(i);
-			//System.out.println("|--"+cycle);
 			
 			if(eulerianSequence.isEmpty()) {
 				eulerianSequence.add(cycleSet.get(0).get(0).getSource());
-				//System.out.println("|--"+eulerianSequence);
-				for(Transition t: cycle) eulerianSequence.add(t.getDestination());
+				//eulerianTestSuite.add(cycleSet.get(0).get(0));
+				
+				for(Transition t: cycle) {
+					eulerianSequence.add(t.getDestination());
+					//eulerianTestSuite.add(t);
+				}
 				cycleSet.remove(0);
 			}
 			else {
 				boolean cont = true;
 				for(int x = 0; x < cycle.size(); x++) {
-					//System.out.println(cycle.get(x));
 					
 					for(int id = 1; id < eulerianSequence.size(); id++) {
 						if(cycle.get(x).getSource().equals(eulerianSequence.get(id))) {
 							List<State> statesCycle = new LinkedList<State>();
-							for(Transition t: cycle) statesCycle.add(t.getDestination());
+							List<Transition> transitionsCycle = new LinkedList<Transition>();
+							
+							for(Transition t: cycle) {
+								statesCycle.add(t.getDestination());
+								transitionsCycle.add(t);
+							}
 							eulerianSequence.addAll(id+1, statesCycle);
+							//eulerianTestSuite.addAll(id+1,transitionsCycle);
+							
 							cycleSet.remove(0);
 							i = i - 1;
 							cont = false;
@@ -240,9 +279,8 @@ public class GenerateTestCase {
 			if(i >= cycleSet.size()) i = 0;
 		}
 		
-		//System.out.println(eulerianSequence);
 		eulerianSequence.removeLast();
-		//System.out.println(eulerianSequence);
+		//eulerianTestSuite.removeLast();
 		return eulerianSequence;
 	}
 	
@@ -263,26 +301,104 @@ public class GenerateTestCase {
 			}
 		}
 		
-		//for(List<Transition> cycle: cycleSet) {
-		//	System.out.println(cycle);
-		//}
-		
 		return generateEulerianCycleSequence(cycleSet);
 	}
 	
-	public List<LinkedList<State>> eulerianCycle(){
+	public List<String> eulerianCycle(){
 		List<LinkedList<State>> eulerianCycleByEachInitialState = new LinkedList<LinkedList<State>>();
 		Iterator<State> initalStateIterator = returnInicialStates(graph.clone()).iterator();
-		//System.out.println(graph.showResult());
 		
 		while(initalStateIterator.hasNext()) {
 			setFalseTransitionsStates();
 			State initialState = initalStateIterator.next();
-			//System.out.println("Initial state: "+initialState.getName());
 			eulerianCycleByEachInitialState.add(generateEulerianCycle(initialState));
-			//System.out.println("\n---------------------------------------\n");
 		}
 		
-		return eulerianCycleByEachInitialState;
+		return eulerianTestSuiteAllTranspairs(eulerianCycleByEachInitialState);
+	}
+	
+	private LinkedList<Transition> generateEulerianCycleTestSuite(List<LinkedList<Transition>> cycleSet){
+		int i = 0;
+		LinkedList<Transition> eulerianTestSuite = new LinkedList<Transition>();
+		LinkedList<State> eulerianSequence = new LinkedList<State>();
+		
+		while(!cycleSet.isEmpty()){
+			List<Transition> cycle = cycleSet.get(i);
+			
+			if(eulerianSequence.isEmpty()) {
+				eulerianSequence.add(cycleSet.get(0).get(0).getSource());
+				eulerianTestSuite.add(cycleSet.get(0).get(0));
+				
+				for(Transition t: cycle) {
+					eulerianSequence.add(t.getDestination());
+					eulerianTestSuite.add(t);
+				}
+				cycleSet.remove(0);
+			}
+			else {
+				boolean cont = true;
+				for(int x = 0; x < cycle.size(); x++) {
+					
+					for(int id = 1; id < eulerianSequence.size(); id++) {
+						if(cycle.get(x).getSource().equals(eulerianSequence.get(id))) {
+							List<State> statesCycle = new LinkedList<State>();
+							List<Transition> transitionsCycle = new LinkedList<Transition>();
+							
+							for(Transition t: cycle) {
+								statesCycle.add(t.getDestination());
+								transitionsCycle.add(t);
+							}
+							eulerianSequence.addAll(id+1, statesCycle);
+							eulerianTestSuite.addAll(id+1,transitionsCycle);
+							
+							cycleSet.remove(0);
+							i = i - 1;
+							cont = false;
+							break;
+						}
+					}
+					if(!cont) break;
+				}
+				i=i+1;
+			}
+			
+			if(i >= cycleSet.size()) i = 0;
+		}
+		
+		eulerianSequence.removeLast();
+		eulerianTestSuite.removeLast();
+		return eulerianTestSuite;
+	}
+	
+	private LinkedList<Transition> generateEulerianCycleTestSuite(State initialState){
+		List<LinkedList<Transition>> cycleSet = new LinkedList<LinkedList<Transition>>();
+		
+		//First is check if is possible get the eulerian cycle only by initial state
+		while(!checkAllTransitionsWasVisited(initialState)) {
+			cycleSet.add(createCycle(initialState, initialState));
+		}
+		
+		//If have states with transitions not visited yet, so another states of graph are checked
+		Iterator<State> stateIterator = graph.getIteratorStateValue();
+		while(stateIterator.hasNext()) {
+			State state = stateIterator.next();
+			while(!checkAllTransitionsWasVisited(state)) {
+				cycleSet.add(createCycle(state, state));
+			}
+		}
+		return generateEulerianCycleTestSuite(cycleSet);
+	}
+	
+	public List<String> eulerianCycleTestSuite(){
+		List<LinkedList<Transition>> eulerianCycleByEachInitialState = new LinkedList<LinkedList<Transition>>();
+		Iterator<State> initalStateIterator = returnInicialStates(graph.clone()).iterator();
+		
+		while(initalStateIterator.hasNext()) {
+			setFalseTransitionsStates();
+			State initialState = initalStateIterator.next();
+			eulerianCycleByEachInitialState.add(generateEulerianCycleTestSuite(initialState));
+		}
+		
+		return eulerianTestSuiteAllTrans(eulerianCycleByEachInitialState);
 	}
 }

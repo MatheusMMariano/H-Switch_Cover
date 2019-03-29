@@ -85,7 +85,10 @@ public class Transition {
 	
 	public String toString(){
 		StringBuffer output = new StringBuffer();
-	    return output.append("["+getDestination().getName()+"]"+getInput()).toString();
+		//return output.append(getName()).toString();
+		return output.append(getInput()).toString();
+		//return output.append(getDestination().getName()).toString();
+	    //return output.append("["+getDestination().getName()+"]"+getInput()).toString();
 	}
 
 }
