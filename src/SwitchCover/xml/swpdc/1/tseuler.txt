@@ -1,0 +1,1 @@
+switchPDCOn/start60s,POSTOk/null,endtime/null,VER_OP_MODE/INFO_OP_MODE,switchPDCOff/null

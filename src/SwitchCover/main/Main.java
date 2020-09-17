@@ -1,5 +1,5 @@
 package SwitchCover.main;
-//
+// Novo Comentário
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -36,6 +36,10 @@ public class Main {
 
 	public Main() {
 
+	}
+
+	private void vijay () {
+		System.out.println(" Here ... ");
 	}
 	
 	public List<String> newTratamentFile(List<List<String>> listSequence, String typeFile, String name){

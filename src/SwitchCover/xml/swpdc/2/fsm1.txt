@@ -1,0 +1,11 @@
+pDCOffIdle -- a / start60s -> iniMPostCoutingTime
+safeMEPP1OnEPP2OffSDIdle -- a / CMD_REC -> safeMEPPsOffSDIdle
+safeMEPPsOffIdle -- a / CMD_REC -> safeMEPP1OnEPP2OffIdle
+safeMEnteredCoutingTime -- a / null -> safeMVerOpIdle
+iniMPostCoutingTime -- a / null -> safeMEnteredCoutingTime
+safeMEPP1OnEPP2OffIdle -- a / CMD_REC -> safeMEPP1OnEPP2OnIdle
+safeMEPPsReadyIdle -- a / CMD_REC -> safeMEPP1OnEPP2OffSDIdle
+safeMEPP1OnEPP2OnIdle -- a / null -> safeMWaitEPPsReadyCoutingTime
+safeMWaitEPPsReadyCoutingTime -- a / null -> safeMEPPsReadyIdle
+safeMVerOpIdle -- a / INFO_OP_MODE -> safeMEPPsOffIdle
+safeMEPPsOffSDIdle -- a / null -> pDCOffIdle

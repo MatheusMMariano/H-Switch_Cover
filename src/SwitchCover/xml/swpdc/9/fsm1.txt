@@ -1,0 +1,17 @@
+pDCOffIdle -- a / start60s -> iniMPostCoutingTime
+safeMEnteredCoutingTime -- a / null -> safeMVerOpIdle
+nomMPrepDmpRIdle -- a / DMP_DATA_RSC29_1_1111 -> nomMTxDmpR1Idle
+safeMWaitToNominalIdle -- a / CMD_REC -> nomMBeginDmpDataIdle
+nomMTxDmpR2Idle -- a / NO_DATA -> nomMEndDmpDataIdle
+safeMVerOpIdle -- a / INFO_OP_MODE -> safeMEPPsOffIdle
+safeMEPPsOffSDIdle -- a / null -> pDCOffIdle
+safeMEPP1OnEPP2OffSDIdle -- a / CMD_REC -> safeMEPPsOffSDIdle
+safeMEPPsOffIdle -- a / CMD_REC -> safeMEPP1OnEPP2OffIdle
+iniMPostCoutingTime -- a / null -> safeMEnteredCoutingTime
+safeMEPP1OnEPP2OffIdle -- a / CMD_REC -> safeMEPP1OnEPP2OnIdle
+nomMTxDmpR1Idle -- a / DMP_DATA_RSC0_549 -> nomMTxDmpR2Idle
+nomMBeginDmpDataIdle -- a / INFO_OP_MODE -> nomMWaitPrepDmpIdle
+safeMEPP1OnEPP2OnIdle -- a / null -> safeMWaitEPPsReadyCoutingTime
+safeMWaitEPPsReadyCoutingTime -- a / null -> safeMWaitToNominalIdle
+nomMEndDmpDataIdle -- a / CMD_REC -> safeMEPP1OnEPP2OffSDIdle
+nomMWaitPrepDmpIdle -- a / CMD_REC -> nomMPrepDmpRIdle

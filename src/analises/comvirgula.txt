@@ -1,0 +1,4 @@
+
+copiar,colar,colar
+copiar,recortar
+recortar,recortar,copiar,copiar,colar,colar,colar,recortar

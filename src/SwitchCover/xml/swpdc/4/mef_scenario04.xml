@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet type="text/xsl" href="mfeeTesteX.xsl"?> 
+<MFEE>
+	<STATES>
+		<STATE NAME="pDCOffIdlePower" TYPE="inicial"/>
+		<STATE NAME="iniMPostCoutingTimePower" TYPE="normal"/>
+		<STATE NAME="safeMEnteredCoutingTimePower" TYPE="normal"/>
+		<STATE NAME="safeMVerOpIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMBeginPwVerIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMParHkRIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMWaitHkCoutingTimePower" TYPE="normal"/>
+		<STATE NAME="safeMEndHkIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMPrepHkRIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMTxHkRIdlePower" TYPE="normal"/>
+		<STATE NAME="safeMPowerOnOkIdleNoPower" TYPE="normal"/>
+		<STATE NAME="pDCResetIdleNoPower" TYPE="normal"/>
+		<STATE NAME="iniMPostCoutingTimeNoPower" TYPE="normal"/>
+		<STATE NAME="safeMEnteredCoutingTimeNoPower" TYPE="normal"/>
+		<STATE NAME="safeMVerOpIdleNoPower" TYPE="normal"/>
+		<STATE NAME="safeMBeginResVerIdleNoPower" TYPE="normal"/>
+		<STATE NAME="safeMWaitHkResCoutingTimeNoPower" TYPE="normal"/>
+		<STATE NAME="safeMEndHkResIdleNoPower" TYPE="normal"/>
+		<STATE NAME="safeMPrepHkRResIdleNoPower" TYPE="normal"/>
+		<STATE NAME="safeMTxHkRResIdleNoPower" TYPE="normal"/>
+		<STATE NAME="safeMResetOKIdlePower" TYPE="normal"/>
+		<STATE NAME="pDCOffIdlePower" TYPE="final"/>
+	</STATES>
+	<EVENTS>
+		<EVENT VALUE="5" NAME="switchPDCOn"/>
+		<OUTPUT VALUE="saida6" EVENT="start60s"/>
+		<EVENT VALUE="5" NAME="POSTOk"/>
+		<EVENT VALUE="5" NAME="endtime"/>
+		<EVENT VALUE="5" NAME="VER_OP_MODE"/>
+		<OUTPUT VALUE="saida2" EVENT="INFO_OP_MODE"/>
+		<EVENT VALUE="5" NAME="CH_SW_PAR_HK_60s"/>
+		<OUTPUT VALUE="saida3" EVENT="CMD_REC"/>
+		<EVENT VALUE="5" NAME="start600s"/>
+		<EVENT VALUE="5" NAME="PREP_HK"/>
+		<EVENT VALUE="5" NAME="TX_DATA_Hk"/>
+		<OUTPUT VALUE="saida5" EVENT="HK_DATA_RSC0"/>
+		<EVENT VALUE="5" NAME="va_HK_DATA"/>
+		<OUTPUT VALUE="saida8" EVENT="er_POST_PowerOn"/>
+		<EVENT VALUE="5" NAME="ACT_HW_Reset"/>
+		<OUTPUT VALUE="saida7" EVENT="er_POST_Reset"/>
+		<EVENT VALUE="5" NAME="switchPDCOff"/>
+	</EVENTS>
+	<INPUTS>
+		<INPUT EVENT="switchPDCOn"/>
+		<INPUT EVENT="POSTOk"/>
+		<INPUT EVENT="endtime"/>
+		<INPUT EVENT="VER_OP_MODE"/>
+		<INPUT EVENT="CH_SW_PAR_HK_60s"/>
+		<INPUT EVENT="start600s"/>
+		<INPUT EVENT="PREP_HK"/>
+		<INPUT EVENT="TX_DATA_Hk"/>
+		<INPUT EVENT="va_HK_DATA"/>
+		<INPUT EVENT="ACT_HW_Reset"/>
+		<INPUT EVENT="start60s"/>
+		<INPUT EVENT="switchPDCOff"/>
+	</INPUTS>
+	<OUTPUTS>
+		<OUTPUT EVENT="INFO_OP_MODE" VALUE="saida2"/>
+		<OUTPUT EVENT="CMD_REC" VALUE="saida3"/>
+		<OUTPUT EVENT="HK_DATA_RSC0" VALUE="saida5"/>
+		<OUTPUT EVENT="start60s" VALUE="saida6"/>
+		<OUTPUT EVENT="er_POST_Reset" VALUE="saida7"/>
+		<OUTPUT EVENT="er_POST_PowerOn" VALUE="saida8"/>
+	</OUTPUTS>
+	<TRANSITIONS>
+		<TRANSITION SOURCE="pDCOffIdlePower" DESTINATION="iniMPostCoutingTimePower">
+			<INPUT INTERFACE="L">switchPDCOn</INPUT>
+				<OUTPUT INTERFACE="L">start60s</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="iniMPostCoutingTimePower" DESTINATION="safeMEnteredCoutingTimePower">
+			<INPUT INTERFACE="L">POSTOk</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEnteredCoutingTimePower" DESTINATION="safeMVerOpIdlePower">
+			<INPUT INTERFACE="L">endtime</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMVerOpIdlePower" DESTINATION="safeMBeginPwVerIdlePower">
+			<INPUT INTERFACE="L">VER_OP_MODE</INPUT>
+				<OUTPUT INTERFACE="L">INFO_OP_MODE</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMBeginPwVerIdlePower" DESTINATION="safeMParHkRIdlePower">
+			<INPUT INTERFACE="L">CH_SW_PAR_HK_60s</INPUT>
+				<OUTPUT INTERFACE="L">CMD_REC</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMParHkRIdlePower" DESTINATION="safeMWaitHkCoutingTimePower">
+			<INPUT INTERFACE="L">start600s</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMWaitHkCoutingTimePower" DESTINATION="safeMEndHkIdlePower">
+			<INPUT INTERFACE="L">endtime</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEndHkIdlePower" DESTINATION="safeMPrepHkRIdlePower">
+			<INPUT INTERFACE="L">PREP_HK</INPUT>
+				<OUTPUT INTERFACE="L">CMD_REC</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMPrepHkRIdlePower" DESTINATION="safeMTxHkRIdlePower">
+			<INPUT INTERFACE="L">TX_DATA_Hk</INPUT>
+				<OUTPUT INTERFACE="L">HK_DATA_RSC0</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMTxHkRIdlePower" DESTINATION="safeMPowerOnOkIdleNoPower">
+			<INPUT INTERFACE="L">va_HK_DATA</INPUT>
+				<OUTPUT INTERFACE="L">er_POST_PowerOn</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMPowerOnOkIdleNoPower" DESTINATION="pDCResetIdleNoPower">
+			<INPUT INTERFACE="L">ACT_HW_Reset</INPUT>
+				<OUTPUT INTERFACE="L">CMD_REC</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="pDCResetIdleNoPower" DESTINATION="iniMPostCoutingTimeNoPower">
+			<INPUT INTERFACE="L">start60s</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="iniMPostCoutingTimeNoPower" DESTINATION="safeMEnteredCoutingTimeNoPower">
+			<INPUT INTERFACE="L">POSTOk</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEnteredCoutingTimeNoPower" DESTINATION="safeMVerOpIdleNoPower">
+			<INPUT INTERFACE="L">endtime</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMVerOpIdleNoPower" DESTINATION="safeMBeginResVerIdleNoPower">
+			<INPUT INTERFACE="L">VER_OP_MODE</INPUT>
+				<OUTPUT INTERFACE="L">INFO_OP_MODE</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMBeginResVerIdleNoPower" DESTINATION="safeMWaitHkResCoutingTimeNoPower">
+			<INPUT INTERFACE="L">start60s</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMWaitHkResCoutingTimeNoPower" DESTINATION="safeMEndHkResIdleNoPower">
+			<INPUT INTERFACE="L">endtime</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMEndHkResIdleNoPower" DESTINATION="safeMPrepHkRResIdleNoPower">
+			<INPUT INTERFACE="L">PREP_HK</INPUT>
+				<OUTPUT INTERFACE="L">CMD_REC</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMPrepHkRResIdleNoPower" DESTINATION="safeMTxHkRResIdleNoPower">
+			<INPUT INTERFACE="L">TX_DATA_Hk</INPUT>
+				<OUTPUT INTERFACE="L">HK_DATA_RSC0</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMTxHkRResIdleNoPower" DESTINATION="safeMResetOKIdlePower">
+			<INPUT INTERFACE="L">va_HK_DATA</INPUT>
+				<OUTPUT INTERFACE="L">er_POST_Reset</OUTPUT>
+	</TRANSITION>
+		<TRANSITION SOURCE="safeMResetOKIdlePower" DESTINATION="pDCOffIdlePower">
+			<INPUT INTERFACE="L">switchPDCOff</INPUT>
+				<OUTPUT INTERFACE="L">null</OUTPUT>
+	</TRANSITION>
+	</TRANSITIONS>
+</MFEE>
